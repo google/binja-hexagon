@@ -1,0 +1,15 @@
+cmake_minimum_required (VERSION 3.0)
+project ("gflags-build" C CXX)
+include(FindPackageHandleStandardArgs)
+find_package(Threads REQUIRED)
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+set(GFLAGS_BUILD_SHARED_LIBS OFF)
+set(GFLAGS_BUILD_STATIC_LIBS ON)
+set(GFLAGS_BUILD_gflags_LIB ON)
+set(GFLAGS_BUILD_gflags_nothreads_LIB OFF)
+set(GFLAGS_BUILD_TESTING OFF)
+set(GFLAGS_BUILD_PACKAGING OFF)
+add_subdirectory(${CMAKE_SOURCE_DIR}/third_party/gflags
+  ${CMAKE_BINARY_DIR}/gflags-build/build
+)
+

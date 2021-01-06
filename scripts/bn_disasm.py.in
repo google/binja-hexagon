@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+import argparse
+import enum
+import sys
+import os
+sys.path.append(os.path.join('${BN_INSTALL_DIR}', 'python'))
+
+try:
+  import binaryninja as binja
+except ImportError:
+  print('Failed to import binaryninja Python API. Check BN_INSTALL_DIR.')
+  sys.exit(1)
+
+
+class Listing(enum.Enum):
+  disasm = 'disasm'
+  llil = 'llil'
+  mlil = 'mlil'
+  hlil = 'hlil'
+
+  def __str__(self):
+    return self.value
+
+
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument(
+      '--listing',
+      default=Listing.disasm,
+      metavar='LISTING',
+      type=Listing,
+      choices=list(Listing))
+  parser.add_argument(
+      'input', metavar='INPUT', type=str, help='Binary file to disasm')
+  args = parser.parse_args()
+
+  print('Analyzing {0}'.format(args.input))
+  binja.log.log_to_stdout(True)
+  bv = binja.BinaryViewType.get_view_of_file(args.input)
+
+  if args.listing == Listing.disasm:
+    for line in bv.linear_disassembly:
+      print(line)
+  elif args.listing == Listing.llil:
+    for func in bv.functions:
+      print('{0}:'.format(func.name))
+      for block in func.llil:
+        for insn in block:
+          print('\t{0}: {1}'.format(insn.instr_index, insn))
+      print('')
+  elif args.listing == Listing.mlil:
+    for func in bv.functions:
+      print('{0}:'.format(func.name))
+      for block in func.mlil:
+        for insn in block:
+          print('\t{0}: {1}'.format(insn.instr_index, insn))
+      print('')
+  elif args.listing == Listing.hlil:
+    for func in bv.functions:
+      print('{0}:'.format(func.name))
+      for line in func.hlil.root.lines:
+        print('\t{0}'.format(line))
+      print('')
+
+
+if __name__ == '__main__':
+  sys.exit(main())

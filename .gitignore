@@ -1,0 +1,8 @@
+*.swp
+*.pyc
+tags
+cscope.*
+.clangd/
+compile_commands.json
+build/
+*.idb
