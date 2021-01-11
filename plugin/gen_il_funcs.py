@@ -853,6 +853,30 @@ class IlPop(IlExprId):
     return '''il.Pop({0})'''.format(self.size)
 
 
+class IlReadGP(IlExprId):
+
+  @type_check
+  def __init__(self, size: int):
+    super().__init__()
+    self.size = size
+
+  def __eq__(self, other):
+    if not isinstance(other, self.__class__):
+      return NotImplemented
+    return (self.size == other.size)
+
+  # #define fREAD_GP() \
+  #     (insn->extension_valid ? 0 : READ_REG(HEX_REG_GP))
+  #
+  # Global pointer relative addresses can be expressed two ways in assembly language:
+  #  * By explicitly adding an unsigned offset value to register GP.
+  #  * By specifying only an immediate value as the instruction operand.
+  def __repr__(self):
+    return (
+        '''(insn.extension_valid ? il.Const({0}, 0) : il.Register({0}, HEX_REG_GP))'''
+        .format(self.size))
+
+
 class IlLabel(str):
   pass
 
@@ -1284,7 +1308,14 @@ class SemanticsTreeTransformer(Transformer):
     return IlRegister(4, 'HEX_REG_SP')
 
   def macro_expr_fREAD_GP(self, args):
-    return IlRegister(4, 'HEX_REG_GP')
+    # macros.h:
+    # #define fREAD_GP() \
+    #     (insn->extension_valid ? 0 : READ_REG(HEX_REG_GP))
+    #
+    # Global pointer relative addresses can be expressed two ways in assembly language:
+    #  * By explicitly adding an unsigned offset value to register GP.
+    #  * By specifying only an immediate value as the instruction operand.
+    return IlReadGP(4)
 
   def macro_expr_fREAD_P0(self, args):
     assert (len(args) == 0)

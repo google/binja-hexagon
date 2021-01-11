@@ -692,6 +692,49 @@ R1.L = #0x22 }
 4: temp200.d = LR
 5: <return> jump(LR)''')
 
+  def test_global_pointer_relative_offset(self):
+    func = self.get_function('test_global_pointer_relative_offset')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R1 = memw(GP+#0x10) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp100.d = GP + 0x10
+1: temp1.d = [temp100.d].d
+2: R1 = temp1.d
+3: temp200.d = LR
+4: <return> jump(LR)''')
+
+  def test_global_pointer_relative_imm(self):
+    func = self.get_function('test_global_pointer_relative_imm')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R1 = memw(GP+#0x10) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp100.d = GP + 0x10
+1: temp1.d = [temp100.d].d
+2: R1 = temp1.d
+3: temp200.d = LR
+4: <return> jump(LR)''')
+
+  def test_global_pointer_relative_immext(self):
+    func = self.get_function('test_global_pointer_relative_immext')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ immext(#0x123440)
+R1 = memw(GP+##0x123450) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp100.d = 0x123450
+1: temp1.d = [temp100.d {0x123450}].d
+2: R1 = temp1.d
+3: temp200.d = LR
+4: <return> jump(LR)''')
+
 
 if __name__ == '__main__':
   TestPluginIl.TARGET_FILE = os.environ.get('TEST_TARGET_FILE')

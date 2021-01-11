@@ -980,7 +980,7 @@ class TestGenIlFunc(unittest.TestCase):
         self.parse_semantics('L2_loadrigp'), [
             IlSetRegister(
                 4, 'EA_REG',
-                IlAdd(4, IlRegister(4, 'HEX_REG_GP'), IlConst(4, 'uiV'))),
+                IlAdd(4, IlReadGP(4), IlConst(4, 'uiV'))),
             IlSetRegister(4, 'RdV', IlLoad(4, IlRegister(4, 'EA_REG')))
         ])
 

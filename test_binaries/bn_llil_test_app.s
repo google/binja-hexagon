@@ -264,6 +264,18 @@ test_extract:
   { r1 = extractu(r0, #2, #20) }
   { jumpr lr }
 
+test_global_pointer_relative_offset:
+  { r1 = memw(gp + #16) }
+  { jumpr lr }
+
+test_global_pointer_relative_imm:
+  { r1 = memw(#16) }
+  { jumpr lr }
+
+test_global_pointer_relative_immext:
+  { r1 = memw(##0x123450) }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -296,6 +308,9 @@ start:
   { call test_halfwords }
   { call test_insert }
   { call test_extract }
+  { call test_global_pointer_relative_offset }
+  { call test_global_pointer_relative_imm }
+  { call test_global_pointer_relative_immext }
 
   { jumpr lr }
 
