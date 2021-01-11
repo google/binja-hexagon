@@ -64,8 +64,8 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_allocframe')
     self.assertEqual(
         self.list_asm(func), '''
-{ allocframe(SP,#8):raw }
-{ R0 = #256 }
+{ allocframe(SP,#0x8):raw }
+{ R0 = #0x100 }
 { LR:FP = dealloc_return(FP):raw }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -106,7 +106,7 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_cmp_to_predicate')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R0,#1) }
+{ P0 = cmp.eq(R0,#0x1) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -119,9 +119,9 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_memory_load')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#4096)
-R1 = ##4096 }
-{ R2 = memb(R1+#1) }
+{ immext(#0x1000)
+R1 = ##0x1000 }
+{ R2 = memb(R1+#0x1) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -137,8 +137,8 @@ R1 = ##4096 }
     func = self.get_function('test_memory_store')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#1193024)
-memw(R1+#0) = ##1193046 }
+{ immext(#0x123440)
+memw(R1+#0x0) = ##0x123456 }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -154,7 +154,7 @@ memw(R1+#0) = ##1193046 }
     self.assertEqual(
         self.list_asm(func), '''
 { R3 = add(R1,R2)
-memw(R5+#0) = R3.new }
+memw(R5+#0x0) = R3.new }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -169,7 +169,7 @@ memw(R5+#0) = R3.new }
     func = self.get_function('test_mux')
     self.assertEqual(
         self.list_asm(func), '''
-{ R0 = mux(P0,#1,#0) }
+{ R0 = mux(P0,#0x1,#0x0) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -186,7 +186,7 @@ memw(R5+#0) = R3.new }
     func = self.get_function('test_tstbit')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = tstbit(R0,#0) }
+{ P0 = tstbit(R0,#0x0) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -201,7 +201,7 @@ memw(R5+#0) = R3.new }
         self.list_asm(func), '''
 { R1 = add(R1,R1)
 jump 0x80 }
-{ R0 = #1; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp1.d = R1 + R1
@@ -217,8 +217,8 @@ jump 0x80 }
         self.list_asm(func), '''
 { R1 = add(R1,R1)
 if (P0) jump:t 0x90 }
-{ R0 = #1; jumpr LR }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -244,8 +244,8 @@ if (P0) jump:t 0x90 }
 { if (P0) jump:t 0xa0
 jump 0xa4
 R1 = add(R1,R1) }
-{ R0 = #1; jumpr LR }
-{ R0 = #2; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x2; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp210.b = 0
@@ -271,9 +271,9 @@ R1 = add(R1,R1) }
 { if (P0) jump:t 0xb8
 if (!P1) jump:t 0xbc
 R1 = add(R1,R1) }
-{ R0 = #1; jumpr LR }
-{ R0 = #0; jumpr LR }
-{ R1 = #2; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x0; jumpr LR }
+{ R1 = #0x2; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp210.b = 0
@@ -323,7 +323,7 @@ jumpr LR }''')
     self.assertEqual(
         self.list_asm(func), '''
 { call 0xe4
-memw(R2+#0) = R3 }
+memw(R2+#0x0) = R3 }
 { nop
 jumpr LR }''')
     self.assertEqual(
@@ -341,7 +341,7 @@ jumpr LR }''')
         self.list_asm(func), '''
 { if (P0) call 0xf4
 R1 = add(R1,R1) }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp210.b = 0
@@ -364,7 +364,7 @@ R1 = add(R1,R1) }
 { if (P0) call 0x104
 jump 0x108
 R1 = add(R1,R1) }
-{ R0 = #2; jumpr LR }''')
+{ R0 = #0x2; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp210.b = 0
@@ -387,9 +387,9 @@ R1 = add(R1,R1) }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1)
-P0 = cmp.eq(R3,#2);if (P0.new) jump:t 0x118 }
-{ R0 = #1; jumpr LR }
-{ R0 = #0; jumpr LR }''')
+P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x118 }
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp212.b = 0
@@ -415,11 +415,11 @@ P0 = cmp.eq(R3,#2);if (P0.new) jump:t 0x118 }
     func = self.get_function('test_dualjump_cmp_jump_with_direct_jump')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R3,#2);if (P0.new) jump:t 0x128
+{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x128
 jump 0x12c
 R1 = add(R1,R1) }
-{ R0 = #1; jumpr LR }
-{ R0 = #2; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x2; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -445,12 +445,12 @@ R1 = add(R1,R1) }
     func = self.get_function('test_dualjump_two_cmp_jumps')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R3,#2);if (P0.new) jump:t 0x140
-P1 = cmp.eq(R3,#2);if (P1.new) jump:t 0x144
+{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x140
+P1 = cmp.eq(R3,#0x2);if (P1.new) jump:t 0x144
 R1 = add(R1,R1) }
-{ R0 = #1; jumpr LR }
-{ R0 = #0; jumpr LR }
-{ R0 = #2; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x0; jumpr LR }
+{ R0 = #0x2; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp212.b = 0
@@ -490,8 +490,8 @@ R1 = add(R1,R1) }
         self.list_asm(func), '''
 { R1 = add(R1,R1)
 if (cmp.eq(R1.new,R2)) jump:t 0x154 }
-{ R0 = #1; jumpr LR }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x1; jumpr LR }
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -540,7 +540,7 @@ jumpr R0 }''')
         self.list_asm(func), '''
 { R1 = add(R1,R1)
 if (P0) jumpr:nt R0 }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -576,7 +576,7 @@ callr R0 }''')
         self.list_asm(func), '''
 { R1 = add(R1,R1)
 if (P0) callr R0 }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -598,7 +598,7 @@ if (P0) callr R0 }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1); if (P0) dealloc_return }
-{ R0 = #0; jumpr LR }''')
+{ R0 = #0x0; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp211.b = 0
@@ -626,7 +626,7 @@ if (P0) callr R0 }
     func = self.get_function('test_control_regs')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R0,#1) }
+{ P0 = cmp.eq(R0,#0x1) }
 { R1 = P3:0 }
 { jumpr LR }''')
     self.assertEqual(
@@ -642,8 +642,8 @@ if (P0) callr R0 }
     func = self.get_function('test_halfwords')
     self.assertEqual(
         self.list_asm(func), '''
-{ R0.H = #12
-R1.L = #34 }
+{ R0.H = #0xc
+R1.L = #0x22 }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -664,7 +664,7 @@ R1.L = #34 }
     func = self.get_function('test_insert')
     self.assertEqual(
         self.list_asm(func), '''
-{ R1 = insert(R0,#1,#6) }
+{ R1 = insert(R0,#0x1,#0x6) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
@@ -681,7 +681,7 @@ R1.L = #34 }
     func = self.get_function('test_extract')
     self.assertEqual(
         self.list_asm(func), '''
-{ R1 = extractu(R0,#2,#20) }
+{ R1 = extractu(R0,#0x2,#0x14) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''

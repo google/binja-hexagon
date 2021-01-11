@@ -432,7 +432,7 @@ class InsnTreeTransformer(Transformer):
             TextToken('"#"'),
         ]
       res += [
-          IntegerToken('StrCat(insn.immed[{0}])'.format(ii),
+          IntegerToken('StrCat("0x", Hex(insn.immed[{0}]))'.format(ii),
                        'insn.immed[{0}]'.format(ii)),
       ]
     return res
@@ -469,7 +469,7 @@ class InsnTreeTransformer(Transformer):
   def const(self, num):
     return [
         TextToken('"#"'),
-        IntegerToken('StrCat({})'.format(num), '{}'.format(num)),
+        IntegerToken('StrCat("0x", Hex({}))'.format(num), '{}'.format(num)),
     ]
 
   # pred_reg: "p" DIGIT

@@ -272,7 +272,7 @@ TEST_F(InsnUtilTest, DisasmsCallInsn) {
 
 TEST_F(InsnUtilTest, DisasmsTrapInsn) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x10));
-  EXPECT_THAT(Disasm(match), Eq("{ trap0(#0) }"));
+  EXPECT_THAT(Disasm(match), Eq("{ trap0(#0x0) }"));
 }
 
 TEST_F(InsnUtilTest, DisasmsJumpInsn) {
@@ -287,30 +287,30 @@ TEST_F(InsnUtilTest, DisasmsIfInsn) {
 
 TEST_F(InsnUtilTest, DisasmsSubInsn) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x14c));
-  EXPECT_THAT(Disasm(match), Eq("{ R1 = #0; R2 = #0 }"));
+  EXPECT_THAT(Disasm(match), Eq("{ R1 = #0x0; R2 = #0x0 }"));
 }
 
 TEST_F(InsnUtilTest, DisasmsImmext) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x8));
-  EXPECT_THAT(Disasm(match), Eq("{ immext(#0)  "));
+  EXPECT_THAT(Disasm(match), Eq("{ immext(#0x0)  "));
   ASSERT_OK_AND_ASSIGN(match, db_.Lookup(0xc));
-  EXPECT_THAT(Disasm(match), Eq("  R1 = ##24 }"));
+  EXPECT_THAT(Disasm(match), Eq("  R1 = ##0x18 }"));
 }
 
 TEST_F(InsnUtilTest, DisasmsCombineTwoImmexts) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x60f8));
-  EXPECT_THAT(Disasm(match), Eq("  R3:R2 = combine(#4,##65535) }"));
+  EXPECT_THAT(Disasm(match), Eq("  R3:R2 = combine(#0x4,##0xffff) }"));
 }
 
 TEST_F(InsnUtilTest, DisasmsMemd) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x7164));
   EXPECT_THAT(Disasm(match),
-              Eq("  memd(SP+#-16) = R17:R16; allocframe(#16) }"));
+              Eq("  memd(SP+#0xfffffff0) = R17:R16; allocframe(#0x10) }"));
 }
 
 TEST_F(InsnUtilTest, DisasmsLoop) {
   ASSERT_OK_AND_ASSIGN(PacketDb::InsnInfo match, db_.Lookup(0x1c0));
-  EXPECT_THAT(Disasm(match), Eq("{ loop0(0x1c8,#10)  "));
+  EXPECT_THAT(Disasm(match), Eq("{ loop0(0x1c8,#0xa)  "));
   ASSERT_OK_AND_ASSIGN(match, db_.Lookup(0x1cc));
   EXPECT_THAT(Disasm(match), Eq("  nop }  :endloop0"));
 }
