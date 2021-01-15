@@ -725,7 +725,7 @@ R1.L = #0x22 }
     self.assertEqual(
         self.list_asm(func), '''
 { immext(#0x123440)
-R1 = memw(GP+##0x123450) }
+R1 = memw(0+##0x123450) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''

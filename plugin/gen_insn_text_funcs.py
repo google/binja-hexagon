@@ -136,7 +136,8 @@ insn_grammar = r"""
     REG_C: /[LlHh]/
 
     pred_reg: "p" DIGIT
-    sys_reg: "gp" | "pc" | "sgp" DIGIT ":0"? | "r29" | "r31"
+    gp_reg: "gp"
+    sys_reg: "pc" | "sgp" DIGIT ":0"? | "r29" | "r31"
     subreg: ".uh" | ".h" | ".uw" | ".w" | ".ub" | ".b"
     dot_new: ".new"
     dot_cur: ".cur" | ".tmp"
@@ -146,7 +147,7 @@ insn_grammar = r"""
     reg_brev: reg ":brev"
     reg_star: reg "*"
     not_reg: not_sign reg
-    ?any_reg: reg | reg_dot | pred_reg | sys_reg | reg_brev | reg_star
+    ?any_reg: reg | reg_dot | pred_reg | gp_reg | sys_reg | reg_brev | reg_star
 
     ?operand: const | imm | any_reg | not_reg | circ_addr
 
@@ -169,6 +170,7 @@ insn_parser = Lark(
 TextToken = namedtuple('TextToken', ['arg1'])
 InstructionToken = namedtuple('InstructionToken', ['arg1'])
 RegisterToken = namedtuple('RegisterToken', ['arg1'])
+GPRegisterToken = namedtuple('GPRegisterToken', ['arg1'])
 CodeRelativeAddressToken = namedtuple('CodeRelativeAddressToken',
                                       ['arg1', 'arg2'])
 IntegerToken = namedtuple('IntegerToken', ['arg1', 'arg2'])
@@ -477,7 +479,13 @@ class InsnTreeTransformer(Transformer):
   def pred_reg(self, digit):
     return [RegisterToken('"{}"'.format('P' + digit))]
 
-  # sys_reg: "gp" | "pc" | "sgp" DIGIT ":0"? | "r29" | "r31"
+  # gp_reg: "gp"
+  @v_args(meta=True)
+  def gp_reg(self, children, meta):
+    word = self.beh[meta.start_pos:meta.end_pos].upper()
+    return [GPRegisterToken('"{}"'.format(word))]
+
+  # sys_reg: "pc" | "sgp" DIGIT ":0"? | "r29" | "r31"
   @v_args(meta=True)
   def sys_reg(self, children, meta):
     word = self.beh[meta.start_pos:meta.end_pos].upper()
@@ -564,6 +572,16 @@ def wrap_call(tok):
     return 'result.emplace_back(InstructionToken, {0.arg1});'.format(tok)
   if isinstance(tok, RegisterToken):
     return 'result.emplace_back(RegisterToken, {0.arg1});'.format(tok)
+  if isinstance(tok, GPRegisterToken):
+    # Global pointer relative addressing has different semantics when there's
+    # a valid immediate extension.
+    # #define fREAD_GP() \
+    #     (insn->extension_valid ? 0 : READ_REG(HEX_REG_GP))
+    return '''if (insn.extension_valid) {{
+                result.emplace_back(IntegerToken, "0", 0);
+            }} else {{
+                result.emplace_back(RegisterToken, {0.arg1});
+            }}'''.format(tok)
   if isinstance(tok, CodeRelativeAddressToken):
     return 'result.emplace_back(CodeRelativeAddressToken, {0.arg1}, {0.arg2});'.format(
         tok)
