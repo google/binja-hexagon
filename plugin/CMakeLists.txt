@@ -20,7 +20,7 @@ set(INSN_TEXT_FUNCS_CC  ${CMAKE_CURRENT_BINARY_DIR}/insn_text_funcs_generated.cc
 add_custom_command(
   OUTPUT ${INSN_TEXT_FUNCS_CC}
   COMMAND PYTHONPATH=${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon ${CMAKE_CURRENT_SOURCE_DIR}/gen_insn_text_funcs.py ${SEMANTICS} ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/attribs_def.h ${INSN_TEXT_FUNCS_CC}
-  COMMAND clang-format -i ${INSN_TEXT_FUNCS_CC}
+  COMMAND clang-format -i ${INSN_TEXT_FUNCS_CC} || (exit 0)
   DEPENDS gen_insn_text_funcs.py ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/hex_common.py ${SEMANTICS} ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/attribs_def.h
 )
 
@@ -45,7 +45,7 @@ set(IL_FUNCS_CC   ${CMAKE_CURRENT_BINARY_DIR}/il_funcs_generated.cc)
 add_custom_command(
   OUTPUT ${IL_FUNCS_CC}
   COMMAND PYTHONPATH=${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon ${CMAKE_CURRENT_SOURCE_DIR}/gen_il_funcs.py ${SEMANTICS} ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/attribs_def.h ${IL_FUNCS_CC}
-  COMMAND clang-format -i ${IL_FUNCS_CC}
+  COMMAND clang-format -i ${IL_FUNCS_CC} || (exit 0)
   DEPENDS gen_il_funcs.py gen_il_funcs_data.py ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/hex_common.py ${SEMANTICS} ${CMAKE_SOURCE_DIR}/third_party/qemu-hexagon/attribs_def.h
 )
 
