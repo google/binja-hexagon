@@ -69,5 +69,5 @@ order to run the headless e2e tests.
 Add a symlink to the plugin binary:
 
 ```
-$ ln -s ${PWD}/build/plugin/libarch_hexagon.so ${HOME}/.binaryninja/plugins/libarch_hexagon.so
+$ ln -s ${PWD}/plugin/libarch_hexagon.so ${HOME}/.binaryninja/plugins/libarch_hexagon.so
 ```
