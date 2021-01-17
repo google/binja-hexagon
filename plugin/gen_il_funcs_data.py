@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
 SUPPORTED_TAGS = [
     'J2_jump', 'J2_jumpr', 'J2_jumpt', 'J2_jumpf', 'J2_jumptpt', 'J2_jumpfpt',
     'J2_jumprt', 'J2_jumprf', 'J2_jumprtpt', 'J2_jumprfpt', 'J2_jumptnew',
@@ -236,19 +235,19 @@ SUPPORTED_TAGS = [
     'S2_vspliceib', 'S2_vsplicerb', 'S2_insert', 'A4_bitspliti', 'A4_bitsplit',
     'S4_extract', 'S2_extractu', 'S2_insertp', 'S4_extractp', 'S2_extractup',
     'S2_mask', 'S2_tstbit_i', 'S4_ntstbit_i', 'S2_setbit_i', 'S2_togglebit_i',
-    'S2_clrbit_i', 'J2_trap0', 'J2_pause', 'Y2_break', 'Y2_icinva', 'Y2_isync',
-    'Y2_barrier', 'Y2_syncht', 'Y2_dcfetchbo', 'Y2_dccleana', 'Y2_dccleaninva',
-    'Y2_dcinva', 'Y4_l2fetch', 'Y5_l2fetch', 'SA1_addi', 'SA1_tfr', 'SA1_seti',
-    'SA1_setin1', 'SA1_clrtnew', 'SA1_clrfnew', 'SA1_clrt', 'SA1_clrf',
-    'SA1_addsp', 'SA1_inc', 'SA1_dec', 'SA1_addrx', 'SA1_zxtb', 'SA1_and1',
-    'SA1_sxtb', 'SA1_zxth', 'SA1_sxth', 'SA1_combinezr', 'SA1_combinerz',
-    'SA1_combine0i', 'SA1_combine1i', 'SA1_combine2i', 'SA1_combine3i',
-    'SA1_cmpeqi', 'SL1_loadri_io', 'SL1_loadrub_io', 'SL2_loadrh_io',
-    'SL2_loadruh_io', 'SL2_loadrb_io', 'SL2_loadri_sp', 'SL2_loadrd_sp',
-    'SL2_deallocframe', 'SL2_return', 'SL2_return_t', 'SL2_return_f',
-    'SL2_return_tnew', 'SL2_return_fnew', 'SL2_jumpr31', 'SL2_jumpr31_t',
-    'SL2_jumpr31_f', 'SL2_jumpr31_tnew', 'SL2_jumpr31_fnew', 'SS1_storew_io',
-    'SS1_storeb_io', 'SS2_storeh_io', 'SS2_stored_sp', 'SS2_storew_sp',
-    'SS2_storewi0', 'SS2_storebi0', 'SS2_storewi1', 'SS2_storebi1',
-    'SS2_allocframe'
+    'S2_clrbit_i', 'A2_swiz', 'J2_trap0', 'J2_pause', 'Y2_break', 'Y2_icinva',
+    'Y2_isync', 'Y2_barrier', 'Y2_syncht', 'Y2_dcfetchbo', 'Y2_dccleana',
+    'Y2_dccleaninva', 'Y2_dcinva', 'Y4_l2fetch', 'Y5_l2fetch', 'SA1_addi',
+    'SA1_tfr', 'SA1_seti', 'SA1_setin1', 'SA1_clrtnew', 'SA1_clrfnew',
+    'SA1_clrt', 'SA1_clrf', 'SA1_addsp', 'SA1_inc', 'SA1_dec', 'SA1_addrx',
+    'SA1_zxtb', 'SA1_and1', 'SA1_sxtb', 'SA1_zxth', 'SA1_sxth', 'SA1_combinezr',
+    'SA1_combinerz', 'SA1_combine0i', 'SA1_combine1i', 'SA1_combine2i',
+    'SA1_combine3i', 'SA1_cmpeqi', 'SL1_loadri_io', 'SL1_loadrub_io',
+    'SL2_loadrh_io', 'SL2_loadruh_io', 'SL2_loadrb_io', 'SL2_loadri_sp',
+    'SL2_loadrd_sp', 'SL2_deallocframe', 'SL2_return', 'SL2_return_t',
+    'SL2_return_f', 'SL2_return_tnew', 'SL2_return_fnew', 'SL2_jumpr31',
+    'SL2_jumpr31_t', 'SL2_jumpr31_f', 'SL2_jumpr31_tnew', 'SL2_jumpr31_fnew',
+    'SS1_storew_io', 'SS1_storeb_io', 'SS2_storeh_io', 'SS2_stored_sp',
+    'SS2_storew_sp', 'SS2_storewi0', 'SS2_storebi0', 'SS2_storewi1',
+    'SS2_storebi1', 'SS2_allocframe'
 ]

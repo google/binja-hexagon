@@ -735,6 +735,18 @@ R1 = memw(0+##0x123450) }
 3: temp200.d = LR
 4: <return> jump(LR)''')
 
+  def test_swiz(self):
+    func = self.get_function('test_swiz')
+    self.assertEqual(self.list_asm(func), '''
+{ R1 = swiz(R0) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp1.d = ((R0 & 0xff) << 0x18) | (((R0 & 0xff00) << 8) | (((R0 & 0xff0000) u>> 8) | ((R0 & 0xff000000) u>> 0x18)))
+1: R1 = temp1.d
+2: temp200.d = LR
+3: <return> jump(LR)''')
+
 
 if __name__ == '__main__':
   TestPluginIl.TARGET_FILE = os.environ.get('TEST_TARGET_FILE')

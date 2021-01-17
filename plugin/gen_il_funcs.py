@@ -888,8 +888,12 @@ class RawC(str):
 #
 # Tag overrides.
 #
-behoverrides = {}
-semoverrides = {}
+behoverrides = {
+    'A2_swiz': 'Rd32=swiz(Rs32)',
+}
+semoverrides = {
+    'A2_swiz': '{ RdV = fBYTESWAP(RsV); }',
+}
 
 
 #
@@ -1534,6 +1538,27 @@ class SemanticsTreeTransformer(Transformer):
                 IlBoolToInt(size,
                             IlCompareSignedLessThan(size, a, IlConst(size,
                                                                      0))))), a)
+
+  def macro_expr_fBYTESWAP(self, args):
+    assert (len(args) == 1)
+    # Swizzle the bytes of a word.
+    # uint32_t Byte0 = value & 0x000000FF;
+    # uint32_t Byte1 = value & 0x0000FF00;
+    # uint32_t Byte2 = value & 0x00FF0000;
+    # uint32_t Byte3 = value & 0xFF000000;
+    # return (Byte0 << 24) | (Byte1 << 8) | (Byte2 >> 8) | (Byte3 >> 24);
+    x = self.lift_operand(args[0])
+    assert (x.size == 4)
+    b0 = IlAnd(x.size, x, IlConst(4, 0x000000ff))
+    b1 = IlAnd(x.size, x, IlConst(4, 0x0000ff00))
+    b2 = IlAnd(x.size, x, IlConst(4, 0x00ff0000))
+    b3 = IlAnd(x.size, x, IlConst(4, 0xff000000))
+    return IlOr(
+        x.size, IlShiftLeft(x.size, b0, IlConst(1, 24)),
+        IlOr(
+            x.size, IlShiftLeft(x.size, b1, IlConst(1, 8)),
+            IlOr(x.size, IlLogicalShiftRight(x.size, b2, IlConst(1, 8)),
+                 IlLogicalShiftRight(x.size, b3, IlConst(1, 24)))))
 
   # | id "(" [expr ("," expr)* ] ")" ";" -> call_stmt
   @v_args(inline=False)

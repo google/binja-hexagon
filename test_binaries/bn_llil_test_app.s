@@ -276,6 +276,10 @@ test_global_pointer_relative_immext:
   { r1 = memw(##0x123450) }
   { jumpr lr }
 
+test_swiz:
+  { r1 = swiz(r0) }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -311,6 +315,7 @@ start:
   { call test_global_pointer_relative_offset }
   { call test_global_pointer_relative_imm }
   { call test_global_pointer_relative_immext }
+  { call test_swiz }
 
   { jumpr lr }
 

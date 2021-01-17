@@ -580,6 +580,15 @@ ATTRIBUTES( \
     "S4_extract", \
     "ATTRIBS()" \
 )
+SEMANTICS( \
+    "A2_swiz", \
+    "Rd32=swiz(Rs32)", \
+    \"\"\"{ fSETBYTE(0,RdV,fGETBYTE(3,RsV)); fSETBYTE(1,RdV,fGETBYTE(2,RsV)); fSETBYTE(2,RdV,fGETBYTE(1,RsV)); fSETBYTE(3,RdV,fGETBYTE(0,RsV)); }\"\"\" \
+)
+ATTRIBUTES( \
+    "A2_swiz", \
+    "ATTRIBS(A_ARCHV2)" \
+)
 """
 
 ATTRIBS_DEF = """
@@ -1224,7 +1233,6 @@ class TestGenIlFunc(unittest.TestCase):
         self.parse_semantics('A2_tfrcrr'),
         [IlSetRegister(4, 'RdV', IlRegister(4, 'CsV'))])
 
-  # yapf: enable
   def test_storew_locked(self):
     self.assertEqual(
         self.parse_semantics('S2_storew_locked'), [
@@ -1262,7 +1270,6 @@ class TestGenIlFunc(unittest.TestCase):
             IlSetRegister(4, 'RxV', IlRegisterSplit(2, 'HI_REG', 'LO_REG'))
         ])
 
-  # yapf: enable
   def test_extract(self):
     self.assertEqual(
         self.parse_semantics('S4_extract'), [
@@ -1290,6 +1297,35 @@ class TestGenIlFunc(unittest.TestCase):
                     IlShiftLeft(
                         4, IlConst(4, 1),
                         IlSub(8, IlRegister(8, 'WIDTH_REG'), IlConst(4, 1)))))
+        ])
+
+  # yapf: enable
+  def test_swiz(self):
+    self.assertEqual(
+        self.parse_semantics('A2_swiz'), [
+            IlSetRegister(
+                4, 'RdV',
+                IlOr(
+                    4,
+                    IlShiftLeft(
+                        4, IlAnd(4, IlRegister(4, 'RsV'), IlConst(4, 0xff)),
+                        IlConst(1, 24)),
+                    IlOr(
+                        4,
+                        IlShiftLeft(
+                            4, IlAnd(4, IlRegister(4, 'RsV'), IlConst(
+                                4, 0xff00)), IlConst(1, 8)),
+                        IlOr(
+                            4,
+                            IlLogicalShiftRight(
+                                4,
+                                IlAnd(4, IlRegister(4, 'RsV'),
+                                      IlConst(4, 0xff0000)), IlConst(1, 8)),
+                            IlLogicalShiftRight(
+                                4,
+                                IlAnd(4, IlRegister(4, 'RsV'),
+                                      IlConst(4, 0xff000000)), IlConst(1,
+                                                                       24))))))
         ])
 
   # def test_gen(self):
