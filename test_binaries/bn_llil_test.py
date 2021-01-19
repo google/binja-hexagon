@@ -648,17 +648,13 @@ R1.L = #0x22 }
     self.assertEqual(
         self.list_llil(func), '''
 0: temp0.d = R0
-1: temp103.w:temp102.w = temp0.d
-2: temp103.w = 0xc
-3: temp0.d = temp103.w:temp102.w
-4: temp1.d = R1
-5: temp103.w:temp102.w = temp1.d
-6: temp102.w = 0x22
-7: temp1.d = temp103.w:temp102.w
-8: R1 = temp1.d
-9: R0 = temp0.d
-10: temp200.d = LR
-11: <return> jump(LR)''')
+1: temp0.d = (temp0.d & not.d(0xffff << 0x10)) | ((0xc & 0xffff) << 0x10)
+2: temp1.d = R1
+3: temp1.d = (temp1.d & not.d(0xffff << 0)) | ((0x22 & 0xffff) << 0)
+4: R1 = temp1.d
+5: R0 = temp0.d
+6: temp200.d = LR
+7: <return> jump(LR)''')
 
   def test_insert(self):
     func = self.get_function('test_insert')
@@ -746,6 +742,74 @@ R1 = memw(0+##0x123450) }
 1: R1 = temp1.d
 2: temp200.d = LR
 3: <return> jump(LR)''')
+
+  def test_combine_zero_and_reg(self):
+    func = self.get_function('test_combine_zero_and_reg')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R0 = #0x1 }
+{ R3:R2 = combine(#0x0,R0) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp0.d = 1
+1: R0 = temp0.d
+2: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | ((R0 & 0xffffffff) << 0)
+3: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | (0 << 0x20)
+4: R3:R2 = temp2.q
+5: temp200.d = LR
+6: <return> jump(LR)''')
+
+  def test_combine_reg_and_zero(self):
+    func = self.get_function('test_combine_reg_and_zero')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R0 = #0x1 }
+{ R3:R2 = combine(R0,#0x0) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp0.d = 1
+1: R0 = temp0.d
+2: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (0 << 0)
+3: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | ((R0 & 0xffffffff) << 0x20)
+4: R3:R2 = temp2.q
+5: temp200.d = LR
+6: <return> jump(LR)''')
+
+  def test_combine_imms(self):
+    func = self.get_function('test_combine_imms')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ immext(#0x1000)
+R3:R2 = combine(#0x1,##0x1000) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | ((0x1000 & 0xffffffff) << 0)
+1: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | ((1 & 0xffffffff) << 0x20)
+2: R3:R2 = temp2.q
+3: temp200.d = LR
+4: <return> jump(LR)''')
+
+  def test_combine_regs(self):
+    func = self.get_function('test_combine_regs')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R0 = #0x1; R1 = #0x2 }
+{ R3:R2 = combine(R0,R1) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp0.d = 1
+1: temp1.d = 2
+2: R1 = temp1.d
+3: R0 = temp0.d
+4: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | ((R1 & 0xffffffff) << 0)
+5: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | ((R0 & 0xffffffff) << 0x20)
+6: R3:R2 = temp2.q
+7: temp200.d = LR
+8: <return> jump(LR)''')
 
 
 if __name__ == '__main__':

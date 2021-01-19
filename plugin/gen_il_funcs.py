@@ -1249,18 +1249,16 @@ class SemanticsTreeTransformer(Transformer):
     #     } while (0)
     assert (len(args) == 3)
     assert (args[0].type == 'INTCON')
-    n, dst, val = list(map(self.lift_operand, args))
+    n = int(args[0])
+    dst, val = list(map(self.lift_operand, args[1:]))
     assert (isinstance(dst, IlRegister) and dst.size == 4)
-    ret = []
-    ret += [IlSetRegisterSplit(2, 'HI_REG', 'LO_REG', dst)]
-    if int(n.val) == 0:
-      ret += [IlSetRegister(2, 'LO_REG', val)]
-    elif int(n.val) == 1:
-      ret += [IlSetRegister(2, 'HI_REG', val)]
-    else:
-      assert (0)
-    ret += [IlSetRegister(4, dst.reg, IlRegisterSplit(2, 'HI_REG', 'LO_REG'))]
-    return ret
+    old = IlAnd(
+        dst.size, dst,
+        IlNot(dst.size,
+              IlShiftLeft(dst.size, IlConst(4, 0xffff), IlConst(1, n * 16))))
+    new = IlShiftLeft(dst.size, IlAnd(dst.size, val, IlConst(4, 0xffff)),
+                      IlConst(1, n * 16))
+    return [IlSetRegister(dst.size, dst.reg, IlOr(dst.size, old, new))]
 
   def macro_stmt_fSETWORD(self, args):
     # macros.h:
@@ -1271,18 +1269,17 @@ class SemanticsTreeTransformer(Transformer):
     #     } while (0)
     assert (len(args) == 3)
     assert (args[0].type == 'INTCON')
-    n, dst, val = list(map(self.lift_operand, args))
+    n = int(args[0])
+    dst, val = list(map(self.lift_operand, args[1:]))
     assert (isinstance(dst, IlRegister) and dst.size == 8)
-    ret = []
-    ret += [IlSetRegisterSplit(4, 'HI_REG', 'LO_REG', dst)]
-    if int(n.val) == 0:
-      ret += [IlSetRegister(4, 'LO_REG', val)]
-    elif int(n.val) == 1:
-      ret += [IlSetRegister(4, 'HI_REG', val)]
-    else:
-      assert (0)
-    ret += [IlSetRegister(8, dst.reg, IlRegisterSplit(4, 'HI_REG', 'LO_REG'))]
-    return ret
+    old = IlAnd(
+        dst.size, dst,
+        IlNot(dst.size,
+              IlShiftLeft(dst.size, IlConst(4, 0xffffffff), IlConst(1,
+                                                                    n * 32))))
+    new = IlShiftLeft(dst.size, IlAnd(dst.size, val, IlConst(4, 0xffffffff)),
+                      IlConst(1, n * 32))
+    return [IlSetRegister(dst.size, dst.reg, IlOr(dst.size, old, new))]
 
   def macro_expr_fFRAME_SCRAMBLE(self, args):
     # This macro is always invoked with the same arguments:
@@ -2131,8 +2128,6 @@ using namespace BinaryNinja;
 
 #define EA_REG  LLIL_TEMP(100)
 #define TMP_REG LLIL_TEMP(101)
-#define LO_REG  LLIL_TEMP(102)
-#define HI_REG  LLIL_TEMP(103)
 #define WIDTH_REG LLIL_TEMP(104)
 #define OFFSET_REG LLIL_TEMP(105)
 #define SHAMT_REG LLIL_TEMP(106)

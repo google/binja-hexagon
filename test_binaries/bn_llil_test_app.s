@@ -280,6 +280,26 @@ test_swiz:
   { r1 = swiz(r0) }
   { jumpr lr }
 
+test_combine_zero_and_reg:
+  { r0 = #1 }
+  { r3:2 = combine(#0, r0) }
+  { jumpr lr }
+
+test_combine_reg_and_zero:
+  { r0 = #1 }
+  { r3:2 = combine(r0, #0) }
+  { jumpr lr }
+
+test_combine_imms:
+  { r3:2 = combine(#1, ##buffer) }
+  { jumpr lr }
+
+test_combine_regs:
+  { r0 = #1
+    r1 = #2 }
+  { r3:2 = combine(r0, r1) }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -316,6 +336,10 @@ start:
   { call test_global_pointer_relative_imm }
   { call test_global_pointer_relative_immext }
   { call test_swiz }
+  { call test_combine_zero_and_reg }
+  { call test_combine_reg_and_zero }
+  { call test_combine_imms }
+  { call test_combine_regs }
 
   { jumpr lr }
 

@@ -589,6 +589,15 @@ ATTRIBUTES( \
     "A2_swiz", \
     "ATTRIBS(A_ARCHV2)" \
 )
+SEMANTICS( \
+    "A2_combineii", \
+    "Rdd32=combine(#s8,#S8)", \
+    \"\"\"{ fIMMEXT(siV); fSETWORD(0,RddV,SiV); fSETWORD(1,RddV,siV); }\"\"\" \
+)
+ATTRIBUTES( \
+    "A2_combineii", \
+    "ATTRIBS(A_ARCHV2)" \
+)
 """
 
 ATTRIBS_DEF = """
@@ -610,6 +619,7 @@ class TestGenIlFunc(unittest.TestCase):
     cls.tagregs = get_tagregs()
     cls.tagimms = get_tagimms()
     cls.maxDiff = None
+  # yapf: enable
 
   def parse_semantics(self, tag):
     parts = preprocess_semantics(tag)
@@ -867,12 +877,32 @@ class TestGenIlFunc(unittest.TestCase):
   def test_combine0i(self):
     self.assertEqual(
         self.parse_semantics('SA1_combine0i'), [
-            IlSetRegisterSplit(4, 'HI_REG', 'LO_REG', IlRegister(8, 'RddV')),
-            IlSetRegister(4, 'LO_REG', IlConst(4, 'uiV')),
-            IlSetRegister(8, 'RddV', IlRegisterSplit(4, 'HI_REG', 'LO_REG')),
-            IlSetRegisterSplit(4, 'HI_REG', 'LO_REG', IlRegister(8, 'RddV')),
-            IlSetRegister(4, 'HI_REG', IlConst(4, 0)),
-            IlSetRegister(8, 'RddV', IlRegisterSplit(4, 'HI_REG', 'LO_REG'))
+            IlSetRegister(
+                8, 'RddV',
+                IlOr(
+                    8,
+                    IlAnd(
+                        8, IlRegister(8, 'RddV'),
+                        IlNot(
+                            8,
+                            IlShiftLeft(8, IlConst(4, 0xffffffff), IlConst(
+                                1, 0)))),
+                    IlShiftLeft(
+                        8, IlAnd(8, IlConst(4, 'uiV'), IlConst(4, 0xffffffff)),
+                        IlConst(1, 0)))),
+            IlSetRegister(
+                8, 'RddV',
+                IlOr(
+                    8,
+                    IlAnd(
+                        8, IlRegister(8, 'RddV'),
+                        IlNot(
+                            8,
+                            IlShiftLeft(8, IlConst(4, 0xffffffff), IlConst(
+                                1, 32)))),
+                    IlShiftLeft(8,
+                                IlAnd(8, IlConst(4, 0), IlConst(4, 0xffffffff)),
+                                IlConst(1, 32))))
         ])
 
   def test_paddit(self):
@@ -987,9 +1017,8 @@ class TestGenIlFunc(unittest.TestCase):
   def test_loadrigp(self):
     self.assertEqual(
         self.parse_semantics('L2_loadrigp'), [
-            IlSetRegister(
-                4, 'EA_REG',
-                IlAdd(4, IlReadGP(4), IlConst(4, 'uiV'))),
+            IlSetRegister(4, 'EA_REG', IlAdd(4, IlReadGP(4), IlConst(4,
+                                                                     'uiV'))),
             IlSetRegister(4, 'RdV', IlLoad(4, IlRegister(4, 'EA_REG')))
         ])
 
@@ -1265,9 +1294,18 @@ class TestGenIlFunc(unittest.TestCase):
   def test_tfrih(self):
     self.assertEqual(
         self.parse_semantics('A2_tfrih'), [
-            IlSetRegisterSplit(2, 'HI_REG', 'LO_REG', IlRegister(4, 'RxV')),
-            IlSetRegister(2, 'HI_REG', IlConst(4, 'uiV')),
-            IlSetRegister(4, 'RxV', IlRegisterSplit(2, 'HI_REG', 'LO_REG'))
+            IlSetRegister(
+                4, 'RxV',
+                IlOr(
+                    4,
+                    IlAnd(
+                        4, IlRegister(4, 'RxV'),
+                        IlNot(
+                            4, IlShiftLeft(4, IlConst(4, 0xffff), IlConst(
+                                1, 16)))),
+                    IlShiftLeft(4,
+                                IlAnd(4, IlConst(4, 'uiV'), IlConst(4, 0xffff)),
+                                IlConst(1, 16))))
         ])
 
   def test_extract(self):
@@ -1299,7 +1337,6 @@ class TestGenIlFunc(unittest.TestCase):
                         IlSub(8, IlRegister(8, 'WIDTH_REG'), IlConst(4, 1)))))
         ])
 
-  # yapf: enable
   def test_swiz(self):
     self.assertEqual(
         self.parse_semantics('A2_swiz'), [
@@ -1326,6 +1363,38 @@ class TestGenIlFunc(unittest.TestCase):
                                 IlAnd(4, IlRegister(4, 'RsV'),
                                       IlConst(4, 0xff000000)), IlConst(1,
                                                                        24))))))
+        ])
+
+  # yapf: enable
+  def test_combineii(self):
+    self.assertEqual(
+        self.parse_semantics('A2_combineii'), [
+            IlSetRegister(
+                8, 'RddV',
+                IlOr(
+                    8,
+                    IlAnd(
+                        8, IlRegister(8, 'RddV'),
+                        IlNot(
+                            8,
+                            IlShiftLeft(8, IlConst(4, 0xffffffff), IlConst(
+                                1, 0)))),
+                    IlShiftLeft(
+                        8, IlAnd(8, IlConst(4, 'SiV'), IlConst(4, 0xffffffff)),
+                        IlConst(1, 0)))),
+            IlSetRegister(
+                8, 'RddV',
+                IlOr(
+                    8,
+                    IlAnd(
+                        8, IlRegister(8, 'RddV'),
+                        IlNot(
+                            8,
+                            IlShiftLeft(8, IlConst(4, 0xffffffff), IlConst(
+                                1, 32)))),
+                    IlShiftLeft(
+                        8, IlAnd(8, IlConst(4, 'siV'), IlConst(4, 0xffffffff)),
+                        IlConst(1, 32))))
         ])
 
   # def test_gen(self):
