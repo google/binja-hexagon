@@ -26,7 +26,7 @@ namespace {
 std::string GeneralRegisterName(uint32_t reg) {
   switch (reg) {
   case HEX_REG_R00 ... HEX_REG_R28:
-    return absl::StrCat("R", reg);
+    return absl::StrCat("R", reg - HEX_REG_R00);
   case HEX_REG_SP: // R29
     return "SP";
   case HEX_REG_FP: // R30
@@ -70,7 +70,7 @@ std::string ControlRegisterName(uint32_t reg) {
   case HEX_REG_CS1: // C13
     return "CS1";
   case HEX_REG_C14 ... HEX_REG_C31:
-    return absl::StrCat("C", reg);
+    return absl::StrCat("C", reg - HEX_REG_C00);
   default:
     LOG(FATAL) << "Unexpected control register reg " << reg;
   }

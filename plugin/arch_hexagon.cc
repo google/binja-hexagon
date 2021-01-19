@@ -169,7 +169,7 @@ public:
   std::string GetRegisterName(uint32_t reg) override {
     switch (reg) {
     case HEX_REG_R00 ... HEX_REG_R28:
-      return absl::StrFormat("R%d", reg);
+      return absl::StrFormat("R%d", reg - HEX_REG_R00);
     case HEX_REG_SP: // R29
       return "SP";
     case HEX_REG_FP: // R30
@@ -205,7 +205,7 @@ public:
     case HEX_REG_CS1: // C13
       return "CS1";
     case HEX_REG_C14 ... HEX_REG_C31:
-      return absl::StrFormat("C%d", reg);
+      return absl::StrFormat("C%d", reg - HEX_REG_C00);
     case HEX_REG_P0: // Subreg of HEX_REG_P3_0
       return "P0";
     case HEX_REG_P1: // Subreg of HEX_REG_P3_0
