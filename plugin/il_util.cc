@@ -45,7 +45,7 @@ absl::Status FillBnInstructionLowLevelImpl(Architecture *arch, uint64_t pc,
   LowLevelILFunction &il = ctx.IL();
   if (opcode_liftptr[insn.opcode] == nullptr) {
     il.AddInstruction(il.Undefined());
-#ifdef NDEBUG
+#ifndef NDEBUG
     LOG(INFO) << "Unsupported lifter for '" << opcode_names[insn.opcode]
               << "' at " << std::hex << "0x" << pc;
 #endif
