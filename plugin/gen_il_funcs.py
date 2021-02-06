@@ -539,6 +539,22 @@ class IlArithShiftRight(IlExprId):
         self.size, self.a, self.b)
 
 
+class IlRotateLeft(IlExprId):
+
+  @type_check
+  def __init__(self, size: int, a: IlExprId, b: IlExprId):
+    super().__init__(signed=a.signed)
+    self.size, self.a, self.b = size, a, b
+
+  def __eq__(self, other):
+    if not isinstance(other, self.__class__):
+      return NotImplemented
+    return (self.size == other.size and self.a == other.a and self.b == other.b)
+
+  def __repr__(self):
+    return '''il.RotateLeft({0}, {1}, {2})'''.format(self.size, self.a, self.b)
+
+
 class IlMult(IlExprId):
 
   @type_check
@@ -1239,6 +1255,18 @@ class SemanticsTreeTransformer(Transformer):
       word = IlLowPart(4, IlLogicalShiftRight(src.size, src, IlConst(1,
                                                                      n * 32)))
     return IlZeroExtend(src.size, word)
+
+  def macro_expr_fROTL4_4u(self, args):
+    assert (len(args) == 2)
+    src, shamt = list(map(self.lift_operand, args))
+    assert (src.size == 4)
+    return IlRotateLeft(src.size, src, shamt)
+
+  def macro_expr_fROTL8_8u(self, args):
+    assert (len(args) == 2)
+    src, shamt = list(map(self.lift_operand, args))
+    assert (src.size == 8)
+    return IlRotateLeft(src.size, src, shamt)
 
   def macro_stmt_fSETHALF(self, args):
     # macros.h:
@@ -1978,6 +2006,8 @@ def preprocess_semantics(tag):
       'fASHIFTR(SRC, SHAMT, REGSTYPE) (fCAST##REGSTYPE##s(SRC) >> (SHAMT))')
   cpreprocessor.define(
       'fLSHIFTR(SRC, SHAMT, REGSTYPE) (fCAST##REGSTYPE##u(SRC) >> (SHAMT))')
+  cpreprocessor.define(
+      'fROTL(SRC, SHAMT, REGSTYPE) (fROTL##REGSTYPE##u(SRC, SHAMT))')
 
   # Multiply operations.
   cpreprocessor.define('fSE32_64(A) (fCAST8s(fCAST4s(A)))')

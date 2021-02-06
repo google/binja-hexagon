@@ -839,6 +839,33 @@ R3:R2 = combine(#0x1,##0x1000) }
     self.assertEqual(r3.type, binja.RegisterValueType.ConstantValue)
     self.assertEqual(r3.value, 1)
 
+  def test_rol(self):
+    func = self.get_function('test_rol')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R5 = rol(R1,#0x1c) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp5.d = rol.d(R1, 0x1c)
+1: R5 = temp5.d
+2: temp200.d = LR
+3: <return> jump(LR)''')
+
+  def test_rol_pair(self):
+    func = self.get_function('test_rol_pair')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R5:R4 = rol(R1:R0,#0xc) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp0.q = R1:R0
+1: temp4.q = rol.q(temp0.q, 0xc)
+2: R5:R4 = temp4.q
+3: temp200.d = LR
+4: <return> jump(LR)''')
+
 
 if __name__ == '__main__':
   TestPluginIl.TARGET_FILE = os.environ.get('TEST_TARGET_FILE')

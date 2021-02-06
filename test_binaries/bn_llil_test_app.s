@@ -300,6 +300,14 @@ test_combine_regs:
   { r3:2 = combine(r0, r1) }
   { jumpr lr }
 
+test_rol:
+  { r5 = rol(r1,#0x1c) }
+  { jumpr lr }
+
+test_rol_pair:
+  { r5:4 = rol(r1:0,#0xc) }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -340,6 +348,8 @@ start:
   { call test_combine_reg_and_zero }
   { call test_combine_imms }
   { call test_combine_regs }
+  { call test_rol }
+  { call test_rol_pair }
 
   { jumpr lr }
 

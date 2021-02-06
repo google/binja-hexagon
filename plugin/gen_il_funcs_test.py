@@ -598,6 +598,24 @@ ATTRIBUTES( \
     "A2_combineii", \
     "ATTRIBS(A_ARCHV2)" \
 )
+SEMANTICS( \
+    "S6_rol_i_r", \
+    "Rd" "32" "" "=rol(" "Rs" "32,#u" "5" ")" "", \
+    \"\"\"{ RdV = fECHO( fROTL(RsV,uiV,4_4)); }\"\"\" \
+)
+ATTRIBUTES( \
+    "S6_rol_i_r", \
+    "ATTRIBS()" \
+)
+SEMANTICS( \
+    "S6_rol_i_p", \
+    "Rdd" "32" "" "=rol(" "Rss" "32,#u" "6" ")" "", \
+    \"\"\"{ RddV = fECHO( fROTL(RssV,uiV,8_8)); }\"\"\" \
+)
+ATTRIBUTES( \
+    "S6_rol_i_p", \
+    "ATTRIBS()" \
+)
 """
 
 ATTRIBS_DEF = """
@@ -619,7 +637,6 @@ class TestGenIlFunc(unittest.TestCase):
     cls.tagregs = get_tagregs()
     cls.tagimms = get_tagimms()
     cls.maxDiff = None
-  # yapf: enable
 
   def parse_semantics(self, tag):
     parts = preprocess_semantics(tag)
@@ -1365,7 +1382,6 @@ class TestGenIlFunc(unittest.TestCase):
                                                                        24))))))
         ])
 
-  # yapf: enable
   def test_combineii(self):
     self.assertEqual(
         self.parse_semantics('A2_combineii'), [
@@ -1395,6 +1411,24 @@ class TestGenIlFunc(unittest.TestCase):
                     IlShiftLeft(
                         8, IlAnd(8, IlConst(4, 'siV'), IlConst(4, 0xffffffff)),
                         IlConst(1, 32))))
+        ])
+
+  # yapf: enable
+  def test_rol_i_r(self):
+    self.assertEqual(
+        self.parse_semantics('S6_rol_i_r'), [
+            IlSetRegister(
+                4, 'RdV',
+                IlRotateLeft(4, IlRegister(4, 'RsV'), IlConst(4, 'uiV')))
+        ])
+
+  # yapf: enable
+  def test_rol_i_p(self):
+    self.assertEqual(
+        self.parse_semantics('S6_rol_i_p'), [
+            IlSetRegister(
+                8, 'RddV',
+                IlRotateLeft(8, IlRegister(8, 'RssV'), IlConst(4, 'uiV')))
         ])
 
   # def test_gen(self):
