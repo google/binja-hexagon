@@ -157,7 +157,7 @@ while (true)
     if ((var_c & 1) != 0)
         temp210_2 = 1
     if (temp210_2 == 1)
-        var_c = 1 + (var_c * 3)
+        var_c = 1 + var_c * 3
     else
         var_c = var_c s>> 1
 int32_t FP
@@ -168,25 +168,25 @@ LR_1:FP = var_8''')
     func = self.get_function('test_max_signed_int')
     self.assertEqual(
         self.list_hlil(func), '''
-*g_res = (arg1 s>= arg2 ? 1 : 0 * arg1) + (arg1 s< arg2 ? 1 : 0 * arg2)''')
+*g_res = (arg1 s>= arg2 ? 1 : 0) * arg1 + (arg1 s< arg2 ? 1 : 0) * arg2''')
 
   def test_max_unsigned_int(self):
     func = self.get_function('test_max_unsigned_int')
     self.assertEqual(
         self.list_hlil(func), '''
-*g_res = (arg1 u>= arg2 ? 1 : 0 * arg1) + (arg1 u< arg2 ? 1 : 0 * arg2)''')
+*g_res = (arg1 u>= arg2 ? 1 : 0) * arg1 + (arg1 u< arg2 ? 1 : 0) * arg2''')
 
   def test_min_signed_int(self):
     func = self.get_function('test_min_signed_int')
     self.assertEqual(
         self.list_hlil(func), '''
-*g_res = (arg1 s<= arg2 ? 1 : 0 * arg1) + (arg1 s> arg2 ? 1 : 0 * arg2)''')
+*g_res = (arg1 s<= arg2 ? 1 : 0) * arg1 + (arg1 s> arg2 ? 1 : 0) * arg2''')
 
   def test_min_unsigned_int(self):
     func = self.get_function('test_min_unsigned_int')
     self.assertEqual(
         self.list_hlil(func), '''
-*g_res = (arg1 u<= arg2 ? 1 : 0 * arg1) + (arg1 u> arg2 ? 1 : 0 * arg2)''')
+*g_res = (arg1 u<= arg2 ? 1 : 0) * arg1 + (arg1 u> arg2 ? 1 : 0) * arg2''')
 
 
 if __name__ == '__main__':

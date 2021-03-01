@@ -276,6 +276,7 @@ private:
 };
 
 extern "C" {
+BN_DECLARE_CORE_ABI_VERSION
 BINARYNINJAPLUGIN bool CorePluginInit() {
   Architecture *hexagon = new HexagonArchitecture("hexagon");
   Architecture::Register(hexagon);
