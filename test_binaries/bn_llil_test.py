@@ -759,13 +759,6 @@ R1 = memw(0+##0x123450) }
 4: R3:R2 = temp2.q
 5: temp200.d = LR
 6: <return> jump(LR)''')
-    last = list(func.llil.instructions)[-1]
-    r2 = last.get_possible_reg_values('R2')
-    self.assertEqual(r2.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r2.value, 1)
-    r3 = last.get_possible_reg_values('R3')
-    self.assertEqual(r3.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r3.value, 0)
 
   def test_combine_reg_and_zero(self):
     func = self.get_function('test_combine_reg_and_zero')
@@ -783,13 +776,6 @@ R1 = memw(0+##0x123450) }
 4: R3:R2 = temp2.q
 5: temp200.d = LR
 6: <return> jump(LR)''')
-    last = list(func.llil.instructions)[-1]
-    r2 = last.get_possible_reg_values('R2')
-    self.assertEqual(r2.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r2.value, 0)
-    r3 = last.get_possible_reg_values('R3')
-    self.assertEqual(r3.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r3.value, 1)
 
   def test_combine_imms(self):
     func = self.get_function('test_combine_imms')
@@ -805,13 +791,6 @@ R3:R2 = combine(#0x1,##0x1000) }
 2: R3:R2 = temp2.q
 3: temp200.d = LR
 4: <return> jump(LR)''')
-    last = list(func.llil.instructions)[-1]
-    r2 = last.get_possible_reg_values('R2')
-    self.assertEqual(r2.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r2.value, 0x1000)
-    r3 = last.get_possible_reg_values('R3')
-    self.assertEqual(r3.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r3.value, 1)
 
   def test_combine_regs(self):
     func = self.get_function('test_combine_regs')
@@ -831,13 +810,6 @@ R3:R2 = combine(#0x1,##0x1000) }
 6: R3:R2 = temp2.q
 7: temp200.d = LR
 8: <return> jump(LR)''')
-    last = list(func.llil.instructions)[-1]
-    r2 = last.get_possible_reg_values('R2')
-    self.assertEqual(r2.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r2.value, 2)
-    r3 = last.get_possible_reg_values('R3')
-    self.assertEqual(r3.type, binja.RegisterValueType.ConstantValue)
-    self.assertEqual(r3.value, 1)
 
   def test_rol(self):
     func = self.get_function('test_rol')
