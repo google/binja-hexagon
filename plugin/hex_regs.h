@@ -136,4 +136,6 @@ enum {
   HEX_REG_P3 = 93,
   // HW loop configuration modeled as sub register of HEX_REG_USR.
   HEX_REG_USR_LPCFG = 94,
+
+  NUM_HEX_REGS = 100,
 };

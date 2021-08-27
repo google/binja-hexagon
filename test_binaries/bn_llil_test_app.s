@@ -308,6 +308,12 @@ test_rol_pair:
   { r5:4 = rol(r1:0,#0xc) }
   { jumpr lr }
 
+// https://github.com/google/binja-hexagon/issues/5 regression test.
+test_clobbered_pair:
+  { R17:16 = combine(R0,R1)
+    memd(SP+#0xfffffff0) = R17:16; allocframe(#0x18) }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -350,12 +356,14 @@ start:
   { call test_combine_regs }
   { call test_rol }
   { call test_rol_pair }
+  { call test_clobbered_pair }
 
   { jumpr lr }
 
 
   .data
   .globl buffer
+.p2align 8
 buffer:
   .string "Hello world!\n"
   .size buffer, 14

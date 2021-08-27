@@ -1802,7 +1802,7 @@ def genptr_decl(tag, regtype, regid, regno):
     if (regid in {'ss', 'tt'}):
       # Source register pair (read-only).
       return [
-          RawC('''SourceReg tmp_{0}{1}V(8, {2}, il);
+          RawC('''SourcePairReg tmp_{0}{1}V({2}, il);
                   const int {0}{1}V = tmp_{0}{1}V.Reg();'''.format(
               regtype, regid, mapped_regno))
       ]
@@ -1869,7 +1869,7 @@ def genptr_decl(tag, regtype, regid, regno):
     if (regid in {'ss'}):
       # Source register pair (read-only).
       return [
-          RawC('''SourceReg tmp_{0}{1}V(8, {2}, il);
+          RawC('''SourcePairReg tmp_{0}{1}V({2}, il);
                   const int {0}{1}V = tmp_{0}{1}V.Reg();'''.format(
               regtype, regid, mapped_regno))
       ]

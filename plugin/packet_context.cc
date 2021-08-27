@@ -57,13 +57,12 @@ int MapRegNum(char regtype, int regno) {
 void TempReg::CopyToTemp(BinaryNinja::LowLevelILFunction &il) {
   ExprId expr;
   if (size_ == 1) {
-    expr = il.SetRegister(1, LLIL_TEMP(reg_), il.Register(1, reg_));
+    expr = il.SetRegister(1, Reg(), il.Register(1, reg_));
   } else if (size_ == 4) {
-    expr = il.SetRegister(4, LLIL_TEMP(reg_), il.Register(4, reg_));
+    expr = il.SetRegister(4, Reg(), il.Register(4, reg_));
   } else {
     CHECK_EQ(size_, 8);
-    expr =
-        il.SetRegister(8, LLIL_TEMP(reg_), il.RegisterSplit(4, reg_ + 1, reg_));
+    expr = il.SetRegister(8, Reg(), il.RegisterSplit(4, reg_ + 1, reg_));
   }
   il.AddInstruction(expr);
 }
@@ -71,13 +70,12 @@ void TempReg::CopyToTemp(BinaryNinja::LowLevelILFunction &il) {
 void TempReg::CopyFromTemp(BinaryNinja::LowLevelILFunction &il) {
   ExprId expr;
   if (size_ == 1) {
-    expr = il.SetRegister(1, reg_, il.Register(1, LLIL_TEMP(reg_)));
+    expr = il.SetRegister(1, reg_, il.Register(1, Reg()));
   } else if (size_ == 4) {
-    expr = il.SetRegister(4, reg_, il.Register(4, LLIL_TEMP(reg_)));
+    expr = il.SetRegister(4, reg_, il.Register(4, Reg()));
   } else {
     CHECK_EQ(size_, 8);
-    expr =
-        il.SetRegisterSplit(4, reg_ + 1, reg_, il.Register(8, LLIL_TEMP(reg_)));
+    expr = il.SetRegisterSplit(4, reg_ + 1, reg_, il.Register(8, Reg()));
   }
   il.AddInstruction(expr);
 }

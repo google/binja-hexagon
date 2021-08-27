@@ -93,9 +93,9 @@ class TestPluginIl(unittest.TestCase):
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp2.q = R3:R2
-1: temp8.q = R9:R8
-2: temp4.q = temp2.q + temp8.q
+0: temp102.q = R3:R2
+1: temp108.q = R9:R8
+2: temp4.q = temp102.q + temp108.q
 3: R5:R4 = temp4.q
 4: temp200.d = LR
 5: <return> jump(LR)''')
@@ -119,16 +119,16 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_memory_load')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#0x303c0)
-R1 = ##0x303cc }
+{ immext(#0x30400)
+R1 = ##0x30400 }
 { R2 = memb(R1+#0x1) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp1.d = 0x303cc
+0: temp1.d = 0x30400
 1: R1 = temp1.d
 2: temp100.d = R1 + 1
-3: temp2.d = sx.d([temp100.d {0x303cd}].b)
+3: temp2.d = sx.d([temp100.d {0x30401}].b)
 4: R2 = temp2.d
 5: temp200.d = LR
 6: <return> jump(LR)''')
@@ -781,12 +781,12 @@ R1 = memw(0+##0x123450) }
     func = self.get_function('test_combine_imms')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#0x303c0)
-R3:R2 = combine(#0x1,##0x303cc) }
+{ immext(#0x30400)
+R3:R2 = combine(#0x1,##0x30400) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (0x303cc & 0xffffffff) << 0
+0: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (0x30400 & 0xffffffff) << 0
 1: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | (1 & 0xffffffff) << 0x20
 2: R3:R2 = temp2.q
 3: temp200.d = LR
@@ -832,12 +832,33 @@ R3:R2 = combine(#0x1,##0x303cc) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp0.q = R1:R0
-1: temp4.q = rol.q(temp0.q, 0xc)
+0: temp100.q = R1:R0
+1: temp4.q = rol.q(temp100.q, 0xc)
 2: R5:R4 = temp4.q
 3: temp200.d = LR
 4: <return> jump(LR)''')
 
+  def test_clobbered_pair(self):
+    func = self.get_function('test_clobbered_pair')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R17:R16 = combine(R0,R1)
+memd(SP+#0xfffffff0) = R17:R16; allocframe(#0x18) }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp16.q = (temp16.q & not.q(0xffffffff << 0)) | (R1 & 0xffffffff) << 0
+1: temp16.q = (temp16.q & not.q(0xffffffff << 0x20)) | (R0 & 0xffffffff) << 0x20
+2: temp116.q = R17:R16
+3: temp100.d = SP - 0x10
+4: [temp100.d {var_10}].q = temp116.q
+5: temp100.d = SP - 8
+6: [temp100.d {var_8}].q = LR:FP
+7: FP = temp100.d
+8: SP = temp100.d - 0x18
+9: R17:R16 = temp16.q
+10: temp200.d = LR
+11: <return> jump(LR)''')
 
 if __name__ == '__main__':
   TestPluginIl.TARGET_FILE = os.environ.get('TEST_TARGET_FILE')
