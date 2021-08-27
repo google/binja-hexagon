@@ -19,17 +19,3 @@ configure_file(
   bn_disasm.py
 )
 
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/disasm.sh.in
-  disasm.sh
-)
-
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/readelf.sh.in
-  readelf.sh
-)
-
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/strip.sh.in
-  strip.sh
-)

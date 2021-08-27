@@ -38,18 +38,8 @@ add_custom_target(
 # Binary Ninja plugins require "-fPIC".
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
-# Optional Qualcomm Hexagon SDK, available at:
-# https://developer.qualcomm.com/software/hexagon-dsp-sdk/tools
-set(HEXAGON_SDK_TOOLS_DIR
-  "$ENV{HOME}/Qualcomm/Hexagon_SDK/3.5.2/tools/HEXAGON_Tools/8.3.07"
-  CACHE STRING "Hexagon SDK root directory"
-)
-get_filename_component(HEXAGON_SDK_TOOLS_DIR ${HEXAGON_SDK_TOOLS_DIR} ABSOLUTE)
-set(HEXAGON_CLANG_C "${HEXAGON_SDK_TOOLS_DIR}/Tools/bin/hexagon-clang")
-set(HEXAGON_CLANG_CXX "${HEXAGON_SDK_TOOLS_DIR}/Tools/bin/hexagon-clang++")
-set(HEXAGON_OBJDUMP "${HEXAGON_SDK_TOOLS_DIR}/Tools/bin/hexagon-llvm-objdump")
-set(HEXAGON_READELF "${HEXAGON_SDK_TOOLS_DIR}/Tools/bin/hexagon-llvm-readelf")
-set(HEXAGON_STRIP "${HEXAGON_SDK_TOOLS_DIR}/Tools/bin/hexagon-strip")
+option(USE_DOCKER_BUILD
+  "If ON, cross-builds Hexagon targets using a docker image from QEMU's registry" OFF)
 
 # Enable testing.
 enable_testing()

@@ -1,2 +1,0 @@
-#!/bin/sh
-${HEXAGON_STRIP} -w -x -K "test_*" $@

@@ -119,16 +119,16 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_memory_load')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#0x1000)
-R1 = ##0x1000 }
+{ immext(#0x303c0)
+R1 = ##0x303cc }
 { R2 = memb(R1+#0x1) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp1.d = 0x1000
+0: temp1.d = 0x303cc
 1: R1 = temp1.d
 2: temp100.d = R1 + 1
-3: temp2.d = sx.d([temp100.d {0x1001}].b)
+3: temp2.d = sx.d([temp100.d {0x303cd}].b)
 4: R2 = temp2.d
 5: temp200.d = LR
 6: <return> jump(LR)''')
@@ -200,13 +200,13 @@ memw(R5+#0x0) = R3.new }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1)
-jump 0x80 }
+jump 0x20174 }
 { R0 = #0x1; jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
 0: temp1.d = R1 + R1
 1: R1 = temp1.d
-2: jump(0x80 => 3 @ 0x80)
+2: jump(0x20174 => 3 @ 0x20174)
 3: temp0.d = 1
 4: R0 = temp0.d
 5: <return> jump(LR)''')
@@ -216,7 +216,7 @@ jump 0x80 }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1)
-if (P0) jump:t 0x90 }
+if (P0) jump:t 0x20184 }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x0; jumpr LR }''')
     self.assertEqual(
@@ -228,8 +228,8 @@ if (P0) jump:t 0x90 }
 4: goto 5
 5: R1 = temp1.d
 6: if (temp211.b == 1) then 7 else 8
-7: jump(0x90 => 9 @ 0x90)
-8: goto 12 @ 0x8c
+7: jump(0x20184 => 9 @ 0x20184)
+8: goto 12 @ 0x20180
 9: temp0.d = 1
 10: R0 = temp0.d
 11: <return> jump(LR)
@@ -241,8 +241,8 @@ if (P0) jump:t 0x90 }
     func = self.get_function('test_dualjump_cond_jump_with_direct_jump')
     self.assertEqual(
         self.list_asm(func), '''
-{ if (P0) jump:t 0xa0
-jump 0xa4
+{ if (P0) jump:t 0x20194
+jump 0x20198
 R1 = add(R1,R1) }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x2; jumpr LR }''')
@@ -255,8 +255,8 @@ R1 = add(R1,R1) }
 4: temp1.d = R1 + R1
 5: R1 = temp1.d
 6: if (temp210.b == 1) then 7 else 8
-7: jump(0xa0 => 9 @ 0xa0, 12 @ 0xa4)
-8: jump(0xa4)
+7: jump(0x20194 => 9 @ 0x20194, 12 @ 0x20198)
+8: jump(0x20198)
 9: temp0.d = 1
 10: R0 = temp0.d
 11: <return> jump(LR)
@@ -268,8 +268,8 @@ R1 = add(R1,R1) }
     func = self.get_function('test_dualjump_two_cond_jumps')
     self.assertEqual(
         self.list_asm(func), '''
-{ if (P0) jump:t 0xb8
-if (!P1) jump:t 0xbc
+{ if (P0) jump:t 0x201ac
+if (!P1) jump:t 0x201b0
 R1 = add(R1,R1) }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x0; jumpr LR }
@@ -287,7 +287,7 @@ R1 = add(R1,R1) }
 8: temp1.d = R1 + R1
 9: R1 = temp1.d
 10: if (temp210.b == 1) then 11 else 12
-11: jump(0xb8 => 13 @ 0xb8, 16 @ 0xbc)
+11: jump(0x201ac => 13 @ 0x201ac, 16 @ 0x201b0)
 12: if (temp211.b == 1) then 19 else 20
 13: temp0.d = 1
 14: R0 = temp0.d
@@ -295,8 +295,8 @@ R1 = add(R1,R1) }
 16: temp1.d = 2
 17: R1 = temp1.d
 18: <return> jump(LR)
-19: jump(0xbc)
-20: goto 21 @ 0xb4
+19: jump(0x201b0)
+20: goto 21 @ 0x201a8
 21: temp0.d = 0
 22: R0 = temp0.d
 23: <return> jump(LR)''')
@@ -305,7 +305,7 @@ R1 = add(R1,R1) }
     func = self.get_function('test_dualjump_direct_call')
     self.assertEqual(
         self.list_asm(func), '''
-{ call 0xd0
+{ call 0x201c4
 R0 = add(R1,R0) }
 { nop
 jumpr LR }''')
@@ -313,8 +313,8 @@ jumpr LR }''')
         self.list_llil(func), '''
 0: temp0.d = R1 + R0
 1: R0 = temp0.d
-2: call(0xd0)
-3: goto 4 @ 0xc8
+2: call(0x201c4)
+3: goto 4 @ 0x201bc
 4: temp201.d = LR
 5: <return> jump(LR)''')
 
@@ -322,7 +322,7 @@ jumpr LR }''')
     func = self.get_function('test_dualjump_direct_call_reorder')
     self.assertEqual(
         self.list_asm(func), '''
-{ call 0xe4
+{ call 0x201d8
 memw(R2+#0x0) = R3 }
 { nop
 jumpr LR }''')
@@ -330,8 +330,8 @@ jumpr LR }''')
         self.list_llil(func), '''
 0: temp100.d = R2
 1: [temp100.d].d = R3
-2: call(0xe4)
-3: goto 4 @ 0xdc
+2: call(0x201d8)
+3: goto 4 @ 0x201d0
 4: temp201.d = LR
 5: <return> jump(LR)''')
 
@@ -339,7 +339,7 @@ jumpr LR }''')
     func = self.get_function('test_dualjump_cond_call')
     self.assertEqual(
         self.list_asm(func), '''
-{ if (P0) call 0xf4
+{ if (P0) call 0x201e8
 R1 = add(R1,R1) }
 { R0 = #0x0; jumpr LR }''')
     self.assertEqual(
@@ -350,9 +350,9 @@ R1 = add(R1,R1) }
 3: goto 4
 4: temp1.d = R1 + R1
 5: R1 = temp1.d
-6: if (temp210.b == 1) then 7 else 9 @ 0xf0
-7: call(0xf4)
-8: goto 9 @ 0xf0
+6: if (temp210.b == 1) then 7 else 9 @ 0x201e4
+7: call(0x201e8)
+8: goto 9 @ 0x201e4
 9: temp0.d = 0
 10: R0 = temp0.d
 11: <return> jump(LR)''')
@@ -361,8 +361,8 @@ R1 = add(R1,R1) }
     func = self.get_function('test_dualjump_cond_call_with_direct_jump')
     self.assertEqual(
         self.list_asm(func), '''
-{ if (P0) call 0x104
-jump 0x108
+{ if (P0) call 0x201f8
+jump 0x201fc
 R1 = add(R1,R1) }
 { R0 = #0x2; jumpr LR }''')
     self.assertEqual(
@@ -374,10 +374,10 @@ R1 = add(R1,R1) }
 4: temp1.d = R1 + R1
 5: R1 = temp1.d
 6: if (temp210.b == 1) then 7 else 9
-7: call(0x104)
+7: call(0x201f8)
 8: goto 10
-9: jump(0x108 => 11 @ 0x108)
-10: <return> tailcall(0x104)
+9: jump(0x201fc => 11 @ 0x201fc)
+10: <return> tailcall(0x201f8)
 11: temp0.d = 2
 12: R0 = temp0.d
 13: <return> jump(LR)''')
@@ -387,7 +387,7 @@ R1 = add(R1,R1) }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1)
-P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x118 }
+P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x2020c }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x0; jumpr LR }''')
     self.assertEqual(
@@ -402,8 +402,8 @@ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x118 }
 7: R1 = temp1.d
 8: P0 = temp90.b
 9: if (temp212.b == 1) then 10 else 11
-10: jump(0x118 => 12 @ 0x118)
-11: goto 15 @ 0x114
+10: jump(0x2020c => 12 @ 0x2020c)
+11: goto 15 @ 0x20208
 12: temp0.d = 1
 13: R0 = temp0.d
 14: <return> jump(LR)
@@ -415,8 +415,8 @@ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x118 }
     func = self.get_function('test_dualjump_cmp_jump_with_direct_jump')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x128
-jump 0x12c
+{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x2021c
+jump 0x20220
 R1 = add(R1,R1) }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x2; jumpr LR }''')
@@ -432,8 +432,8 @@ R1 = add(R1,R1) }
 7: R1 = temp1.d
 8: P0 = temp90.b
 9: if (temp211.b == 1) then 10 else 11
-10: jump(0x128 => 12 @ 0x128, 15 @ 0x12c)
-11: jump(0x12c)
+10: jump(0x2021c => 12 @ 0x2021c, 15 @ 0x20220)
+11: jump(0x20220)
 12: temp0.d = 1
 13: R0 = temp0.d
 14: <return> jump(LR)
@@ -445,8 +445,8 @@ R1 = add(R1,R1) }
     func = self.get_function('test_dualjump_two_cmp_jumps')
     self.assertEqual(
         self.list_asm(func), '''
-{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x140
-P1 = cmp.eq(R3,#0x2);if (P1.new) jump:t 0x144
+{ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x20234
+P1 = cmp.eq(R3,#0x2);if (P1.new) jump:t 0x20238
 R1 = add(R1,R1) }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x0; jumpr LR }
@@ -470,7 +470,7 @@ R1 = add(R1,R1) }
 14: P0 = temp90.b
 15: P1 = temp91.b
 16: if (temp212.b == 1) then 17 else 18
-17: jump(0x140 => 19 @ 0x140, 22 @ 0x144)
+17: jump(0x20234 => 19 @ 0x20234, 22 @ 0x20238)
 18: if (temp213.b == 1) then 25 else 26
 19: temp0.d = 1
 20: R0 = temp0.d
@@ -478,8 +478,8 @@ R1 = add(R1,R1) }
 22: temp0.d = 2
 23: R0 = temp0.d
 24: <return> jump(LR)
-25: jump(0x144)
-26: goto 27 @ 0x13c
+25: jump(0x20238)
+26: goto 27 @ 0x20230
 27: temp0.d = 0
 28: R0 = temp0.d
 29: <return> jump(LR)''')
@@ -489,7 +489,7 @@ R1 = add(R1,R1) }
     self.assertEqual(
         self.list_asm(func), '''
 { R1 = add(R1,R1)
-if (cmp.eq(R1.new,R2)) jump:t 0x154 }
+if (cmp.eq(R1.new,R2)) jump:t 0x20248 }
 { R0 = #0x1; jumpr LR }
 { R0 = #0x0; jumpr LR }''')
     self.assertEqual(
@@ -501,8 +501,8 @@ if (cmp.eq(R1.new,R2)) jump:t 0x154 }
 4: goto 5
 5: R1 = temp1.d
 6: if (temp211.b == 1) then 7 else 8
-7: jump(0x154 => 9 @ 0x154)
-8: goto 12 @ 0x150
+7: jump(0x20248 => 9 @ 0x20248)
+8: goto 12 @ 0x20244
 9: temp0.d = 1
 10: R0 = temp0.d
 11: <return> jump(LR)
@@ -550,7 +550,7 @@ if (P0) jumpr:nt R0 }
 4: temp201.d = R0
 5: goto 6
 6: R1 = temp1.d
-7: if (temp211.b == 1) then 8 else 9 @ 0x170
+7: if (temp211.b == 1) then 8 else 9 @ 0x20264
 8: jump(temp201.d)
 9: temp0.d = 0
 10: R0 = temp0.d
@@ -568,7 +568,7 @@ callr R0 }''')
 2: R1 = temp1.d
 3: call(temp201.d)
 4: goto 5
-5: <return> tailcall(0x17c)''')
+5: <return> tailcall(0x20270)''')
 
   def test_dualjump_cond_indirect_call(self):
     func = self.get_function('test_dualjump_cond_indirect_call')
@@ -586,9 +586,9 @@ if (P0) callr R0 }
 4: temp201.d = R0
 5: goto 6
 6: R1 = temp1.d
-7: if (temp211.b == 1) then 8 else 10 @ 0x184
+7: if (temp211.b == 1) then 8 else 10 @ 0x20278
 8: call(temp201.d)
-9: goto 10 @ 0x184
+9: goto 10 @ 0x20278
 10: temp0.d = 0
 11: R0 = temp0.d
 12: <return> jump(LR)''')
@@ -616,7 +616,7 @@ if (P0) callr R0 }
 12: goto 13
 13: P0 = temp90.b
 14: R1 = temp1.d
-15: if (temp211.b == 1) then 16 else 17 @ 0x18c
+15: if (temp211.b == 1) then 16 else 17 @ 0x20280
 16: <return> jump(LR)
 17: temp0.d = 0
 18: R0 = temp0.d
@@ -781,12 +781,12 @@ R1 = memw(0+##0x123450) }
     func = self.get_function('test_combine_imms')
     self.assertEqual(
         self.list_asm(func), '''
-{ immext(#0x1000)
-R3:R2 = combine(#0x1,##0x1000) }
+{ immext(#0x303c0)
+R3:R2 = combine(#0x1,##0x303cc) }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (0x1000 & 0xffffffff) << 0
+0: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (0x303cc & 0xffffffff) << 0
 1: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | (1 & 0xffffffff) << 0x20
 2: R3:R2 = temp2.q
 3: temp200.d = LR
