@@ -53,7 +53,7 @@ class TestPluginIl(unittest.TestCase):
     func = self.get_function('test_add_int')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = arg2 + arg1
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_cmp_signed_int(self):
@@ -66,7 +66,7 @@ if (temp90)
     temp1 = 0x8765
 if (not.b(temp90))
     temp1 = 0x1234
-*g_res = temp1''')
+g_res = temp1''')
 
   def test_cmp_unsigned_int(self):
     func = self.get_function('test_cmp_unsigned_int')
@@ -78,13 +78,13 @@ if (temp90)
     temp1 = 0x8765
 if (not.b(temp90))
     temp1 = 0x1234
-*g_res = temp1''')
+g_res = temp1''')
 
   def test_mul_int(self):
     func = self.get_function('test_mul_int')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = arg2 * arg1
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_func_call(self):
@@ -92,7 +92,7 @@ return temp0''')
     self.assertEqual(
         self.list_hlil(func), '''
 uint32_t R0 = arg1(arg2, arg2, arg1)
-*g_res = R0
+g_res = R0
 int32_t FP
 int32_t LR
 int32_t LR_1
@@ -103,16 +103,15 @@ return R0''')
     func = self.get_function('test_struct')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = *(arg1 + 8) + arg2
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_fact(self):
     func = self.get_function('test_fact')
     self.assertEqual(
         self.list_hlil(func), '''
-int32_t FP
 int32_t LR
-int64_t var_8 = LR:FP
+int64_t var_8 = LR:arg2
 char temp210 = 0
 if (arg1 != 0)
     temp210 = 1
@@ -120,37 +119,37 @@ int32_t var_c
 if (temp210 != 1)
     var_c = 1
 else
-    var_c = test_fact(arg1 + 0xffffffff) * arg1
-int32_t FP_1
+    var_c = test_fact(arg1 - 1) * arg1
+int32_t FP
 int32_t LR_1
-LR_1:FP_1 = var_8
+LR_1:FP = var_8
 return var_c''')
 
   def test_and_int(self):
     func = self.get_function('test_and_int')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = arg2 & arg1
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_or_int(self):
     func = self.get_function('test_or_int')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = arg2 | arg1
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_xor_int(self):
     func = self.get_function('test_xor_int')
     self.assertEqual(self.list_hlil(func), '''
 uint32_t temp0 = arg2 ^ arg1
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_not_int(self):
     func = self.get_function('test_not_int')
     self.assertEqual(self.list_hlil(func), '''
-*g_res = 0xffffffff - arg1
+g_res = 0xffffffff - arg1
 return 0xffffffff - arg1''')
 
   def test_collatz(self):
@@ -183,7 +182,7 @@ return var_c''')
     self.assertEqual(
         self.list_hlil(func), '''
 int32_t temp0 = (arg1 s>= arg2 ? 1 : 0) * arg1 + (arg1 s< arg2 ? 1 : 0) * arg2
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_max_unsigned_int(self):
@@ -191,7 +190,7 @@ return temp0''')
     self.assertEqual(
         self.list_hlil(func), '''
 int32_t temp0 = (arg1 u>= arg2 ? 1 : 0) * arg1 + (arg1 u< arg2 ? 1 : 0) * arg2
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_min_signed_int(self):
@@ -199,7 +198,7 @@ return temp0''')
     self.assertEqual(
         self.list_hlil(func), '''
 int32_t temp0 = (arg1 s<= arg2 ? 1 : 0) * arg1 + (arg1 s> arg2 ? 1 : 0) * arg2
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
   def test_min_unsigned_int(self):
@@ -207,7 +206,7 @@ return temp0''')
     self.assertEqual(
         self.list_hlil(func), '''
 int32_t temp0 = (arg1 u<= arg2 ? 1 : 0) * arg1 + (arg1 u> arg2 ? 1 : 0) * arg2
-*g_res = temp0
+g_res = temp0
 return temp0''')
 
 

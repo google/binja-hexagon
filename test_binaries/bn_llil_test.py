@@ -190,7 +190,7 @@ memw(R5+#0x0) = R3.new }
 { jumpr LR }''')
     self.assertEqual(
         self.list_llil(func), '''
-0: temp90.b = (R0 & 0x1 << 0) != 0
+0: temp90.b = (R0 & 1 << 0) != 0
 1: P0 = temp90.b
 2: temp200.d = LR
 3: <return> jump(LR)''')
@@ -755,7 +755,7 @@ R1 = memw(0+##0x123450) }
 0: temp0.d = 1
 1: R0 = temp0.d
 2: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | (R0 & 0xffffffff) << 0
-3: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | 0x0 << 0x20
+3: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | 0 << 0x20
 4: R3:R2 = temp2.q
 5: temp200.d = LR
 6: <return> jump(LR)''')
@@ -771,7 +771,7 @@ R1 = memw(0+##0x123450) }
         self.list_llil(func), '''
 0: temp0.d = 1
 1: R0 = temp0.d
-2: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | 0x0 << 0
+2: temp2.q = (temp2.q & not.q(0xffffffff << 0)) | 0 << 0
 3: temp2.q = (temp2.q & not.q(0xffffffff << 0x20)) | (R0 & 0xffffffff) << 0x20
 4: R3:R2 = temp2.q
 5: temp200.d = LR
