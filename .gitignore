@@ -3,6 +3,7 @@
 tags
 cscope.*
 .clangd/
+.cache/
 compile_commands.json
 build/
 *.idb

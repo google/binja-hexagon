@@ -16,7 +16,7 @@
 #
 cmake_minimum_required (VERSION 3.0)
 project ("binja-hexagon" C CXX ASM)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # Set default build type.
 if(NOT CMAKE_BUILD_TYPE)
