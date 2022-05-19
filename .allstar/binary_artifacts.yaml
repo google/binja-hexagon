@@ -1,0 +1,4 @@
+# Exemption reason: Binary artifacts under test_binaries/ are used for unit-testing. Source is included with reproducible build. Binaries are reviewable using binja-hexagon ;-P
+# Exemption timeframe: permanent
+optConfig:
+  optOut: true
