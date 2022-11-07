@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "third_party/qemu-hexagon/attribs.h"
 #include "third_party/qemu-hexagon/bitmap.h"
