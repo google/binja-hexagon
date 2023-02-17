@@ -51,7 +51,8 @@ class TestPluginIl(unittest.TestCase):
 
   def test_add_int(self):
     func = self.get_function('test_add_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = arg2 + arg1
 g_res = temp0
 return temp0''')
@@ -82,7 +83,8 @@ g_res = temp1''')
 
   def test_mul_int(self):
     func = self.get_function('test_mul_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = arg2 * arg1
 g_res = temp0
 return temp0''')
@@ -91,7 +93,7 @@ return temp0''')
     func = self.get_function('test_func_call')
     self.assertEqual(
         self.list_hlil(func), '''
-uint32_t R0 = arg1(arg2, arg2, arg1)
+uint32_t R0 = arg1(arg2)
 g_res = R0
 int32_t FP
 int32_t LR
@@ -101,7 +103,8 @@ return R0''')
 
   def test_struct(self):
     func = self.get_function('test_struct')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = *(arg1 + 8) + arg2
 g_res = temp0
 return temp0''')
@@ -127,28 +130,32 @@ return var_c''')
 
   def test_and_int(self):
     func = self.get_function('test_and_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = arg2 & arg1
 g_res = temp0
 return temp0''')
 
   def test_or_int(self):
     func = self.get_function('test_or_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = arg2 | arg1
 g_res = temp0
 return temp0''')
 
   def test_xor_int(self):
     func = self.get_function('test_xor_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 uint32_t temp0 = arg2 ^ arg1
 g_res = temp0
 return temp0''')
 
   def test_not_int(self):
     func = self.get_function('test_not_int')
-    self.assertEqual(self.list_hlil(func), '''
+    self.assertEqual(
+        self.list_hlil(func), '''
 g_res = 0xffffffff - arg1
 return 0xffffffff - arg1''')
 

@@ -21,6 +21,12 @@ Then activate the environment by sourcing its `bin/activate` file:
 $ source venv/bin/activate
 ```
 
+Install Binary Ninja Python API:
+
+```
+$ python3 ${HOME}/binaryninja/scripts/install_api.py
+```
+
 ---
 
 Download plugin's third party repositories:
