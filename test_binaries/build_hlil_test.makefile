@@ -1,5 +1,6 @@
 CC=hexagon-unknown-linux-musl-clang
-CFLAGS=-mv67 -O2 -mhvx -Wall -g
+CFLAGS=-mv67 -O2 -mhvx -Wall -g -fPIC -shared
+LDFLAGS=-shared
 
 %.o : %.s
 	$(CC) -c $(CFLAGS) $< -o $@

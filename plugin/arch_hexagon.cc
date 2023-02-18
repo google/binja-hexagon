@@ -23,6 +23,7 @@
 #include "plugin/il_util.h"
 #include "plugin/insn_util.h"
 #include "plugin/packet_db.h"
+#include "plugin/relocs.h"
 
 using namespace BinaryNinja;
 
@@ -56,6 +57,78 @@ public:
   }
 
   virtual bool IsStackAdjustedOnReturn() override { return true; }
+};
+
+class HexagonElfRelocationHandler : public RelocationHandler {
+public:
+  virtual bool
+  GetRelocationInfo(Ref<BinaryView> view, Ref<Architecture> arch,
+                    std::vector<BNRelocationInfo> &result) override {
+    (void)view;
+    (void)arch;
+    std::set<uint64_t> relocTypes;
+    for (auto &reloc : result) {
+      reloc.type = StandardRelocationType;
+      switch (reloc.nativeType) {
+      case R_HEX_NONE:
+        reloc.type = IgnoredRelocation;
+        break;
+      case R_HEX_32:
+        reloc.pcRelative = false;
+        reloc.baseRelative = false;
+        reloc.hasSign = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        break;
+      case R_HEX_GOT_32:
+        reloc.pcRelative = true;
+        reloc.baseRelative = false;
+        reloc.hasSign = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        break;
+      case R_HEX_RELATIVE:
+        reloc.pcRelative = false;
+        reloc.baseRelative = true;
+        reloc.hasSign = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        reloc.implicitAddend = true;
+        reloc.addend = 0;
+        break;
+      case R_HEX_COPY:
+        reloc.type = ELFCopyRelocationType;
+        reloc.pcRelative = false;
+        reloc.baseRelative = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        break;
+      case R_HEX_GLOB_DAT:
+        reloc.type = ELFGlobalRelocationType;
+        reloc.pcRelative = false;
+        reloc.baseRelative = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        reloc.implicitAddend = false;
+        break;
+      case R_HEX_JMP_SLOT:
+        reloc.type = ELFJumpSlotRelocationType;
+        reloc.pcRelative = false;
+        reloc.baseRelative = false;
+        reloc.size = 4;
+        reloc.truncateSize = 4;
+        reloc.implicitAddend = false;
+        break;
+      default:
+        reloc.type = UnhandledRelocation;
+        relocTypes.insert(reloc.nativeType);
+      }
+    }
+    for (auto &reloc : relocTypes) {
+      LogWarn("Unsupported ELF relocation type: %lu", reloc);
+    }
+    return true;
+  }
 };
 
 class HexagonArchitecture : public Architecture {
@@ -289,6 +362,7 @@ BINARYNINJAPLUGIN bool CorePluginInit() {
   hexagon->SetCdeclCallingConvention(conv);
   hexagon->SetFastcallCallingConvention(conv);
   hexagon->SetStdcallCallingConvention(conv);
+  hexagon->RegisterRelocationHandler("ELF", new HexagonElfRelocationHandler());
 
   // Register binary format parsers.
   BinaryViewType::RegisterArchitecture("ELF", 164, LittleEndian, hexagon);

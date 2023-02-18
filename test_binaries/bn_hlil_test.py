@@ -40,8 +40,7 @@ class TestPluginIl(unittest.TestCase):
     cls.bv = binja.BinaryViewType.get_view_of_file(cls.TARGET_FILE)
 
   def get_function(self, name):
-    sym = TestPluginIl.bv.get_symbol_by_raw_name(name)
-    return TestPluginIl.bv.get_function_at(sym.address)
+    return TestPluginIl.bv.get_functions_by_name(name)[0]
 
   def list_hlil(self, func):
     ret = ['']

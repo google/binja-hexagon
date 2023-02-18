@@ -41,8 +41,7 @@ class TestPluginIl(unittest.TestCase):
     cls.maxDiff = None
 
   def get_function(self, name):
-    sym = TestPluginIl.bv.get_symbol_by_raw_name(name)
-    return TestPluginIl.bv.get_function_at(sym.address)
+    return TestPluginIl.bv.get_functions_by_name(name)[0]
 
   def list_asm(self, func):
     ret = ['']
@@ -859,6 +858,7 @@ memd(SP+#0xfffffff0) = R17:R16; allocframe(#0x18) }
 9: R17:R16 = temp16.q
 10: temp200.d = LR
 11: <return> jump(LR)''')
+
 
 if __name__ == '__main__':
   TestPluginIl.TARGET_FILE = os.environ.get('TEST_TARGET_FILE')
