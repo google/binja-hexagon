@@ -350,6 +350,11 @@ private:
 
 extern "C" {
 BN_DECLARE_CORE_ABI_VERSION
+  
+BINARYNINJAPLUGIN void CorePluginDependencies() {
+  AddOptionalPluginDependency("view_elf");
+}
+  
 BINARYNINJAPLUGIN bool CorePluginInit() {
   Architecture *hexagon = new HexagonArchitecture("hexagon");
   Architecture::Register(hexagon);
