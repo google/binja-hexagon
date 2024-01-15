@@ -37,7 +37,7 @@ class TestPluginIl(unittest.TestCase):
   def setUpClass(cls):
     assert (cls.TARGET_FILE is not None)
     binja.log.log_to_stdout(True)
-    cls.bv = binja.BinaryViewType.get_view_of_file(cls.TARGET_FILE)
+    cls.bv = binja.load(cls.TARGET_FILE)
 
   def get_function(self, name):
     return TestPluginIl.bv.get_functions_by_name(name)[0]
@@ -94,10 +94,6 @@ return temp0''')
         self.list_hlil(func), '''
 uint32_t R0 = arg1(arg2)
 g_res = R0
-int32_t FP
-int32_t LR
-int32_t LR_1
-LR_1:FP = LR:arg3
 return R0''')
 
   def test_struct(self):
@@ -112,8 +108,6 @@ return temp0''')
     func = self.get_function('test_fact')
     self.assertEqual(
         self.list_hlil(func), '''
-int32_t LR
-int64_t var_8 = LR:arg2
 char temp210 = 0
 if (arg1 != 0)
     temp210 = 1
@@ -122,9 +116,6 @@ if (temp210 != 1)
     var_c = 1
 else
     var_c = test_fact(arg1 - 1) * arg1
-int32_t FP
-int32_t LR_1
-LR_1:FP = var_8
 return var_c''')
 
   def test_and_int(self):
@@ -162,8 +153,6 @@ return 0xffffffff - arg1''')
     func = self.get_function('test_collatz')
     self.assertEqual(
         self.list_hlil(func), '''
-int32_t LR
-int64_t var_8 = LR:arg2
 int32_t var_c = arg1
 while (true)
     char temp210_1 = 0
@@ -178,9 +167,6 @@ while (true)
         var_c = 1 + var_c * 3
     else
         var_c = var_c s>> 1
-int32_t FP
-int32_t LR_1
-LR_1:FP = var_8
 return var_c''')
 
   def test_max_signed_int(self):

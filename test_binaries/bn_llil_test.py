@@ -37,7 +37,7 @@ class TestPluginIl(unittest.TestCase):
   def setUpClass(cls):
     assert (cls.TARGET_FILE is not None)
     binja.log.log_to_stdout(True)
-    cls.bv = binja.BinaryViewType.get_view_of_file(cls.TARGET_FILE)
+    cls.bv = binja.load(cls.TARGET_FILE)
     cls.maxDiff = None
 
   def get_function(self, name):
