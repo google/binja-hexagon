@@ -314,6 +314,17 @@ test_clobbered_pair:
     memd(SP+#0xfffffff0) = R17:16; allocframe(#0x18) }
   { jumpr lr }
 
+// https://github.com/google/binja-hexagon/issues/10 regression test.
+// See https://github.com/qemu/qemu/commit/07c0f65385b9.
+test_lsbnew:
+  { r0 = #2 }
+  { r1 = #5 }
+  { p0 = r0
+    if (p0.new) r1 = #3
+  }
+  { r0 = r1 }
+  { jumpr lr }
+
 start:
   { call test_allocframe }
   { call test_pair_operations }
@@ -357,6 +368,7 @@ start:
   { call test_rol }
   { call test_rol_pair }
   { call test_clobbered_pair }
+  { call test_lsbnew }
 
   { jumpr lr }
 

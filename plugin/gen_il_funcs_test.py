@@ -841,7 +841,7 @@ class TestGenIlFunc(unittest.TestCase):
         ],
          [
              '{ LowLevelILLabel true_case, done;',
-             IlIf(IlRegister(1, 'Pd0'), 'true_case',
+             IlIf(IlAnd(1, IlRegister(1, 'Pd0'), IlConst(1, 1)), 'true_case',
                   'done'), 'true_case', 'riV = riV & ~PCALIGN_MASK;',
              IlSetRegister(1, 'BRANCH_TAKEN_ARRAY + insn_num', IlConst(1, 1)),
              IlJump(IlAdd(4, IlConstPointer(4, 'pc'), IlConst(4, 'riV'))),
@@ -858,7 +858,7 @@ class TestGenIlFunc(unittest.TestCase):
         ],
          [
              '{ LowLevelILLabel true_case, done;',
-             IlIf(IlNot(1, IlRegister(1, 'Pd0')), 'true_case',
+             IlIf(IlNot(1, IlAnd(1, IlRegister(1, 'Pd0'), IlConst(1, 1))), 'true_case',
                   'done'), 'true_case', 'riV = riV & ~PCALIGN_MASK;',
              IlSetRegister(1, 'BRANCH_TAKEN_ARRAY + insn_num', IlConst(1, 1)),
              IlJump(IlAdd(4, IlConstPointer(4, 'pc'), IlConst(4, 'riV'))),
@@ -878,7 +878,7 @@ class TestGenIlFunc(unittest.TestCase):
             IlSetRegister(4, 'EA_REG',
                           IlAdd(4, IlRegister(4, 'RsV'), IlConst(
                               4, 'uiV'))), '{ LowLevelILLabel true_case, done;',
-            IlIf(IlRegister(1, 'PtN'), 'true_case', 'done'), 'true_case',
+            IlIf(IlAnd(1, IlRegister(1, 'PtN'), IlConst(1, 1)), 'true_case', 'done'), 'true_case',
             IlSetRegister(4, 'RdV', IlLoad(4, IlRegister(4, 'EA_REG'))), 'done',
             '}'
         ])

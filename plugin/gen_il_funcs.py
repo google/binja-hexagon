@@ -1480,10 +1480,10 @@ class SemanticsTreeTransformer(Transformer):
     pval = self.lift_operand(args[0])
     if isinstance(pval, IlConst):
       if pval.val == '0':
-        return IlRegister(1, 'Pd0')
+        return IlAnd(1, IlRegister(1, 'Pd0'), IlConst(1, 1))
       if pval.val == '1':
-        return IlRegister(1, 'Pd1')
-    return pval
+        return IlAnd(1, IlRegister(1, 'Pd1'), IlConst(1, 1))
+    return IlAnd(pval.size, pval, IlConst(1, 1))
 
   def macro_expr_fIMMEXT(self, args):
     # macros.h:

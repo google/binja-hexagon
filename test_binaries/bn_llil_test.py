@@ -58,6 +58,12 @@ class TestPluginIl(unittest.TestCase):
         ret.append('{0}: {1}'.format(insn.instr_index, insn))
     return '\n'.join(ret)
 
+  def list_hlil(self, func):
+    ret = ['']
+    for line in func.hlil.root.lines:
+      ret.append('{0}'.format(line))
+    return '\n'.join(ret)
+
   # Tests allocframe, deallocframe, return tag overrides.
   def test_allocframe(self):
     func = self.get_function('test_allocframe')
@@ -395,7 +401,7 @@ P0 = cmp.eq(R3,#0x2);if (P0.new) jump:t 0x2020c }
 1: temp90.b = P0
 2: temp90.b = R3 == 2
 3: temp1.d = R1 + R1
-4: if (temp90.b) then 5 else 7
+4: if (temp90.b & 1) then 5 else 7
 5: temp212.b = 1
 6: goto 7
 7: R1 = temp1.d
@@ -424,7 +430,7 @@ R1 = add(R1,R1) }
 0: temp211.b = 0
 1: temp90.b = P0
 2: temp90.b = R3 == 2
-3: if (temp90.b) then 4 else 6
+3: if (temp90.b & 1) then 4 else 6
 4: temp211.b = 1
 5: goto 6
 6: temp1.d = R1 + R1
@@ -458,10 +464,10 @@ R1 = add(R1,R1) }
 3: temp91.b = R3 == 2
 4: temp90.b = P0
 5: temp90.b = R3 == 2
-6: if (temp90.b) then 7 else 9
+6: if (temp90.b & 1) then 7 else 9
 7: temp212.b = 1
 8: goto 9
-9: if (temp91.b) then 10 else 12
+9: if (temp91.b & 1) then 10 else 12
 10: temp213.b = 1
 11: goto 12
 12: temp1.d = R1 + R1
@@ -858,6 +864,38 @@ memd(SP+#0xfffffff0) = R17:R16; allocframe(#0x18) }
 9: R17:R16 = temp16.q
 10: temp200.d = LR
 11: <return> jump(LR)''')
+
+  def test_lsbnew(self):
+    func = self.get_function('test_lsbnew')
+    self.assertEqual(
+        self.list_asm(func), '''
+{ R0 = #0x2 }
+{ R1 = #0x5 }
+{ P0 = R0
+if (P0.new) R1 = #0x3 }
+{ R0 = R1 }
+{ jumpr LR }''')
+    self.assertEqual(
+        self.list_llil(func), '''
+0: temp0.d = 2
+1: R0 = temp0.d
+2: temp1.d = 5
+3: R1 = temp1.d
+4: temp90.b = R0.b
+5: if (temp90.b & 1) then 6 else 8
+6: temp1.d = 3
+7: goto 8
+8: R1 = temp1.d
+9: P0 = temp90.b
+10: temp0.d = R1
+11: R0 = temp0.d
+12: temp200.d = LR
+13: <return> jump(LR)''')
+    self.assertEqual(
+        self.list_hlil(func), '''
+int32_t P3:0
+P3:0.b = 2
+return 5''')
 
 
 if __name__ == '__main__':
