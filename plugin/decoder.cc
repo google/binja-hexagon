@@ -38,7 +38,7 @@ absl::StatusOr<Packet> Decoder::DecodePacket(absl::Span<const uint32_t> words) {
   Packet pkt;
   int res = decode_packet_safe(words.size(), words.data(), &pkt, true);
   if (res < 0) {
-    return absl::InternalError(absl::StrCat("Failed to decode, res = ", res));
+    return absl::InternalError(absl::StrFormat("Failed to decode, res = %x", res));
   }
   if (res == 0) {
     return absl::FailedPreconditionError("Insufficient words in packet");
