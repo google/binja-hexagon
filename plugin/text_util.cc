@@ -93,6 +93,176 @@ std::string PredicateRegisterName(uint32_t reg) {
   return "";
 }
 
+std::string SystemRegisterName(uint32_t reg) {
+  switch (reg) {
+  case HEX_SREG_SGP0:
+    return "SGP0";
+  case HEX_SREG_SGP1:
+    return "SGP1";
+  case HEX_SREG_STID:
+    return "STID";
+  case HEX_SREG_ELR:
+    return "ELR";
+  case HEX_SREG_BADVA0:
+    return "BADVA0";
+  case HEX_SREG_BADVA1:
+    return "BADVA1";
+  case HEX_SREG_SSR:
+    return "SSR";
+  case HEX_SREG_CCR:
+    return "CCR";
+  case HEX_SREG_HTID:
+    return "HTID";
+  case HEX_SREG_BADVA:
+    return "BADVA";
+  case HEX_SREG_IMASK:
+    return "IMASK";
+  case HEX_SREG_GEVB:
+    return "GEVB";
+  case HEX_SREG_EVB:
+    return "EVB";
+  case HEX_SREG_MODECTL:
+    return "MODECTL";
+  case HEX_SREG_SYSCFG:
+    return "SYSCFG";
+  case HEX_SREG_IPENDAD:
+    return "IPENDAD";
+  case HEX_SREG_VID:
+    return "VID";
+  case HEX_SREG_VID1:
+    return "VID1";
+  case HEX_SREG_BESTWAIT:
+    return "BESTWAIT";
+  case HEX_SREG_IEL:
+    return "IEL";
+  case HEX_SREG_SCHEDCFG:
+    return "SCHEDCFG";
+  case HEX_SREG_IAHL:
+    return "IAHL";
+  case HEX_SREG_CFGBASE:
+    return "CFGBASE";
+  case HEX_SREG_DIAG:
+    return "DIAG";
+  case HEX_SREG_REV:
+    return "REV";
+  case HEX_SREG_PCYCLELO:
+    return "PCYCLELO";
+  case HEX_SREG_PCYCLEHI:
+    return "PCYCLEHI";
+  case HEX_SREG_ISDBST:
+    return "ISDBST";
+  case HEX_SREG_ISDBCFG0:
+    return "ISDBCFG0";
+  case HEX_SREG_ISDBCFG1:
+    return "ISDBCFG1";
+  case HEX_SREG_LIVELOCK:
+    return "LIVELOCK";
+  case HEX_SREG_BRKPTPC0:
+    return "BRKPTPC0";
+  case HEX_SREG_BRKPTCFG0:
+    return "BRKPTCFG0";
+  case HEX_SREG_BRKPTPC1:
+    return "BRKPTPC1";
+  case HEX_SREG_BRKPTCFG1:
+    return "BRKPTCFG1";
+  case HEX_SREG_ISDBMBXIN:
+    return "ISDBMBXIN";
+  case HEX_SREG_ISDBMBXOUT:
+    return "ISDBMBXOUT";
+  case HEX_SREG_ISDBEN:
+    return "ISDBEN";
+  case HEX_SREG_ISDBGPR:
+    return "ISDBGPR";
+  case HEX_SREG_PMUCNT4:
+    return "PMUCNT4";
+  case HEX_SREG_PMUCNT5:
+    return "PMUCNT5";
+  case HEX_SREG_PMUCNT6:
+    return "PMUCNT6";
+  case HEX_SREG_PMUCNT7:
+    return "PMUCNT7";
+  case HEX_SREG_PMUCNT0:
+    return "PMUCNT0";
+  case HEX_SREG_PMUCNT1:
+    return "PMUCNT1";
+  case HEX_SREG_PMUCNT2:
+    return "PMUCNT2";
+  case HEX_SREG_PMUCNT3:
+    return "PMUCNT3";
+  case HEX_SREG_PMUEVTCFG:
+    return "PMUEVTCFG";
+  case HEX_SREG_PMUSTID0:
+    return "PMUSTID0";
+  case HEX_SREG_PMUEVTCFG1:
+    return "PMUEVTCFG1";
+  case HEX_SREG_PMUSTID1:
+    return "PMUSTID1";
+  case HEX_SREG_TIMERLO:
+    return "TIMERLO";
+  case HEX_SREG_TIMERHI:
+    return "TIMERHI";
+  case HEX_SREG_PMUCFG:
+    return "PMUCFG";
+  case HEX_SREG_S59:
+    return "S59";
+  case HEX_SREG_S60:
+    return "S60";
+  case HEX_SREG_S61:
+    return "S61";
+  case HEX_SREG_S62:
+    return "S62";
+  case HEX_SREG_S63:
+    return "S63";
+  case HEX_SREG_COMMIT1T:
+    return "COMMIT1T";
+  case HEX_SREG_COMMIT2T:
+    return "COMMIT2T";
+  case HEX_SREG_COMMIT3T:
+    return "COMMIT3T";
+  case HEX_SREG_COMMIT4T:
+    return "COMMIT4T";
+  case HEX_SREG_COMMIT5T:
+    return "COMMIT5T";
+  case HEX_SREG_COMMIT6T:
+    return "COMMIT6T";
+  case HEX_SREG_PCYCLE1T:
+    return "PCYCLE1T";
+  case HEX_SREG_PCYCLE2T:
+    return "PCYCLE2T";
+  case HEX_SREG_PCYCLE3T:
+    return "PCYCLE3T";
+  case HEX_SREG_PCYCLE4T:
+    return "PCYCLE4T";
+  case HEX_SREG_PCYCLE5T:
+    return "PCYCLE5T";
+  case HEX_SREG_PCYCLE6T:
+    return "PCYCLE6T";
+  case HEX_SREG_STFINST:
+    return "STFINST";
+  case HEX_SREG_ISDBCMD:
+    return "ISDBCMD";
+  case HEX_SREG_ISDBVER:
+    return "ISDBVER";
+  case HEX_SREG_BRKPTINFO:
+    return "BRKPTINFO";
+  case HEX_SREG_RGDR3:
+    return "RGDR3";
+  case HEX_SREG_COMMIT7T:
+    return "COMMIT7T";
+  case HEX_SREG_COMMIT8T:
+    return "COMMIT8T";
+  case HEX_SREG_PCYCLE7T:
+    return "PCYCLE7T";
+  case HEX_SREG_PCYCLE8T:
+    return "PCYCLE8T";
+  case HEX_SREG_S85:
+    return "S85";
+  default:
+    LOG(FATAL) << "Unexpected system register reg " << reg;
+  }
+  return "";
+}
+
 } // namespace
 
 std::string GetRegisterName(absl::string_view reg_type,
@@ -104,6 +274,8 @@ std::string GetRegisterName(absl::string_view reg_type,
     out = ControlRegisterName(HEX_REG_C00 + regno);
   } else if (reg_type == "P") {
     out = PredicateRegisterName(HEX_REG_P0 + regno);
+  } else if (reg_type == "S") {
+    out = SystemRegisterName(HEX_SREG_SGP0 + regno);
   } else {
     out = absl::StrCat(reg_type, regno);
   }
