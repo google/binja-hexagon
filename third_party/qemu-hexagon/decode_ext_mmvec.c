@@ -25,7 +25,7 @@
 #include "third_party/qemu-hexagon/insn.h"
 #include "third_party/qemu-hexagon/opcodes.h"
 
-extern jmp_buf decode_jmp_buf;
+extern __thread jmp_buf decode_jmp_buf;
 #define ASSERT_AND_ABORT(condition)                                            \
   if (!(condition)) {                                                          \
     longjmp(decode_jmp_buf, 1);                                                \

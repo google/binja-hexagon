@@ -28,7 +28,7 @@
 
 #define fZXTN(N, M, VAL) ((VAL) & ((1LL << (N)) - 1))
 
-jmp_buf decode_jmp_buf;
+__thread jmp_buf decode_jmp_buf;
 
 #define ASSERT_AND_ABORT(condition)                                            \
   if (!(condition)) {                                                          \
